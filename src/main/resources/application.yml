@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: plzdrawing
+
+
+#Swagger
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+server:
+  port: 8080
+
+#JWT
+jwt:
+  secret: ${SECRET_KEY}
+  access-expiration: ${ACCESS_EXPIRATION}
+  refresh-expiration: ${REFRESH_EXPIRATION}
+
+#S3
