@@ -1,4 +1,4 @@
-package org.example.plzdrawing.domain;
+package org.example.plzdrawing.domain.scrab;
 
 
 import jakarta.persistence.*;
@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.BaseTimeEntity;
+import org.example.plzdrawing.domain.member.Member;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -13,7 +15,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "status = 'ACTIVE'")
-public class Scrab extends BaseTimeEntity{
+public class Scrab extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "scrab_id")

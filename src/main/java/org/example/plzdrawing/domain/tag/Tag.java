@@ -1,10 +1,13 @@
-package org.example.plzdrawing.domain;
+package org.example.plzdrawing.domain.tag;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.BaseTimeEntity;
+import org.example.plzdrawing.domain.memberTag.MemberTag;
+import org.example.plzdrawing.domain.Status;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "status = 'ACTIVE'")
-public class Tag extends BaseTimeEntity{
+public class Tag extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")

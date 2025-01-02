@@ -1,16 +1,20 @@
-package org.example.plzdrawing.domain;
+package org.example.plzdrawing.domain.memberTag;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.BaseTimeEntity;
+import org.example.plzdrawing.domain.Status;
+import org.example.plzdrawing.domain.member.Member;
+import org.example.plzdrawing.domain.tag.Tag;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberTag extends BaseTimeEntity{
+public class MemberTag extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_tag_id")

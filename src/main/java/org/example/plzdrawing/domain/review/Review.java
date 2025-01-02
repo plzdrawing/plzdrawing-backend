@@ -1,7 +1,10 @@
-package org.example.plzdrawing.domain;
+package org.example.plzdrawing.domain.review;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.plzdrawing.domain.BaseTimeEntity;
+import org.example.plzdrawing.domain.Status;
+import org.example.plzdrawing.domain.member.Member;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -9,7 +12,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "status = 'ACTIVE'")
-public class Review extends BaseTimeEntity{
+public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
