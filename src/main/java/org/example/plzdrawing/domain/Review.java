@@ -2,6 +2,7 @@ package org.example.plzdrawing.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.plzdrawing.domain.member.Member;
 import org.hibernate.annotations.Where;
 
 @Entity
