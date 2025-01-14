@@ -23,7 +23,7 @@ public class TokenService {
     public String reissue(String tokenHeader) {
         String refreshToken = removePrefix(tokenHeader);
         if (jwtTokenProvider.validationRefreshToken(refreshToken)) {
-            return createRefreshToken(jwtTokenProvider.getMemberId(refreshToken));
+            return createAccessToken(jwtTokenProvider.getMemberId(refreshToken));
         }
         throw new RestApiException(TOKEN_INCORRECT.getErrorCode());
     }
