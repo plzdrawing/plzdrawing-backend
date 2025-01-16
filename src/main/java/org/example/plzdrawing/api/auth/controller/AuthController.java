@@ -9,7 +9,7 @@ import org.example.plzdrawing.api.auth.dto.response.EmailVerificationResponse;
 import org.example.plzdrawing.api.auth.dto.response.LoginResponse;
 import org.example.plzdrawing.api.auth.dto.response.ReissueResponse;
 import org.example.plzdrawing.api.auth.dto.response.SignUpResponse;
-import org.example.plzdrawing.api.auth.service.mail.AuthMailService;
+import org.example.plzdrawing.api.auth.service.mail.MailService;
 import org.example.plzdrawing.api.auth.service.strategy.AuthService;
 import org.example.plzdrawing.util.jwt.TokenService;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +28,21 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class AuthController {
 
     private final AuthStrategyManager strategyManager;
-    private final AuthMailService authMailService;
+    private final MailService mailService;
     private final TokenService tokenService;
 
     @PostMapping("/v1/email-verification")
     public ResponseEntity<EmailVerificationResponse> sendEmailForVerification(
             @RequestBody EmailVerificationRequest request) {
 
-        return ResponseEntity.ok(authMailService.sendCodeEmail(request.getEmail()));
+        return ResponseEntity.ok(mailService.sendCodeEmail(request.getEmail()));
     }
 
     @GetMapping("/v1/email-verification")
     public ResponseEntity<Boolean> verifyEmail(@RequestParam("email") String email,
             @RequestParam("code") String authCode) {
 
-        return ResponseEntity.ok(authMailService.verifyAuthCode(email, authCode));
+        return ResponseEntity.ok(mailService.verifyAuthCode(email, authCode));
     }
 
 

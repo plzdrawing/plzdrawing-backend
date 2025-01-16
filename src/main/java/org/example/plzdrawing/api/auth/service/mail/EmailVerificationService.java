@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthMailService implements MailService {
+public class EmailVerificationService implements MailService {
 
     private final AuthCodeRedisRepository authCodeRedisRepository;
     private final RandomGenerator randomGenerator;
