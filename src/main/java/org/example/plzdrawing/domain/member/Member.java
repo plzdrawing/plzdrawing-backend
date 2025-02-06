@@ -57,4 +57,8 @@ public class Member extends BaseTimeEntity {
     public void addMemberTag(MemberTag memberTag) {
         this.memberTags.add(memberTag);
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

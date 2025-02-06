@@ -15,13 +15,20 @@ public class AuthCodeRedisRepository {
 
     private final StringRedisTemplate redisTemplate;
     private final String PREFIX = "AuthNumber:";
-
+    private final String REISSUE_PREFIX = "Reissue:";
 
     public void saveAuthNumber(String key, String emailAuthNumber) {
-        redisTemplate.opsForValue().set(PREFIX+key, emailAuthNumber, EXPIRATION, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue()
+                .set(PREFIX + key, emailAuthNumber, EXPIRATION, TimeUnit.MILLISECONDS);
     }
-
     public String findEmailAuthNumberByKey(String key) {
         return redisTemplate.opsForValue().get(PREFIX + key);
+    }
+
+    public void saveReissueAuthNumber(String key, String reissueAuthNumber) {
+        redisTemplate.opsForValue().set(REISSUE_PREFIX + key, reissueAuthNumber, EXPIRATION, TimeUnit.MILLISECONDS);
+    }
+    public String findReissueAuthNumberByKey(String key) {
+        return redisTemplate.opsForValue().get(REISSUE_PREFIX + key);
     }
 }
