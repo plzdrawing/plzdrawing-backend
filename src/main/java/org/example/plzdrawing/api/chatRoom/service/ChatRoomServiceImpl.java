@@ -1,0 +1,83 @@
+package org.example.plzdrawing.api.chatRoom.service;
+
+import static org.example.plzdrawing.api.chatRoom.exception.ChatRoomErrorCode.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.example.plzdrawing.api.chatRoom.dto.converter.ChatRoomConverter;
+import org.example.plzdrawing.api.chatRoom.dto.request.CreateChatRoomRequest;
+import org.example.plzdrawing.api.chatRoom.dto.response.ResponseChatRoom;
+import org.example.plzdrawing.api.chatRoom.exception.ChatRoomAlreadyExistsException;
+import org.example.plzdrawing.api.member.service.MemberService;
+import org.example.plzdrawing.common.exception.RestApiException;
+import org.example.plzdrawing.domain.chat.message.Chat;
+import org.example.plzdrawing.domain.chat.room.ChatRoom;
+import org.example.plzdrawing.domain.chat.room.ChatRoomRepository;
+import org.example.plzdrawing.domain.member.Member;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class ChatRoomServiceImpl implements ChatRoomService {
+
+    private final MemberService memberService;
+    private final ChatRoomRepository chatRoomRepository;
+    @Override
+    @Transactional
+    public String createChatRoom(Long memberId, CreateChatRoomRequest request) {
+        Long sellerId = request.getSellerId();
+        chatRoomRepository.findBySellerIdAndBuyerId(sellerId,memberId)
+                .ifPresent(existingRoom -> {throw new ChatRoomAlreadyExistsException(existingRoom);});
+
+        Map<Long, Member> members = memberListToMap(memberService.findMembersByIds(createMemberIdList(memberId, sellerId)));
+        ChatRoom chatRoom = ChatRoom.create(members.get(sellerId), members.get(memberId));
+        return chatRoomRepository.save(chatRoom).getChatRoomId();
+    }
+
+    @Override
+    @Transactional
+    public void updateLastMessage(Chat chat) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chat.getChatRoomId())
+                .orElseThrow(() -> new RestApiException(CHATROOM_NOT_FOUND.getErrorCode()));
+        chatRoom.updateLastMessage(chat.getMessage());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseChatRoom> getChatRooms(Long memberId) {
+        List<ChatRoom> chatRooms = chatRoomRepository.findBySellerIdOrBuyerId(memberId, memberId);
+        return chatRooms.stream()
+                .map(chatRoom -> {
+                    String counterpartNickname = pickCounterpartNickname(memberId,chatRoom);
+                    return ChatRoomConverter.fromEntity(chatRoom, counterpartNickname);
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
+    private String pickCounterpartNickname(Long memberId, ChatRoom chatRoom) {
+        if(Objects.equals(memberId, chatRoom.getSellerId())) {
+            return chatRoom.getBuyerNickname();
+        }
+        return chatRoom.getSellerNickname();
+    }
+
+    private List<Long> createMemberIdList(Long buyerId, Long sellerId) {
+        List<Long> memberIds = new ArrayList<>();
+        memberIds.add(buyerId);
+        memberIds.add(sellerId);
+        return memberIds;
+    }
+
+    private Map<Long, Member> memberListToMap(List<Member> members) {
+        return members.stream()
+                .collect(Collectors.toMap(Member::getId, Function.identity()));
+    }
+}
