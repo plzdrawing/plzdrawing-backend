@@ -18,6 +18,6 @@ public class CustomUserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
         memberService.findById(Long.valueOf(username));
-        return new CustomUser(username);
+        return new CustomUser(Long.parseLong(username));
     }
 }

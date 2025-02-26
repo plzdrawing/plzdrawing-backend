@@ -12,18 +12,18 @@ import org.springframework.stereotype.Service;
 public class TokenService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    public String createAccessToken(String memberId) {
-        return jwtTokenProvider.createAccessToken(memberId);
+    public String createAccessToken(Long memberId) {
+        return jwtTokenProvider.createAccessToken(String.valueOf(memberId));
     }
 
-    public String createRefreshToken(String memberId) {
-        return jwtTokenProvider.createRefreshToken(memberId);
+    public String createRefreshToken(Long memberId) {
+        return jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
     }
 
     public String reissue(String tokenHeader) {
         String refreshToken = removePrefix(tokenHeader);
         if (jwtTokenProvider.validationRefreshToken(refreshToken)) {
-            return createAccessToken(jwtTokenProvider.getMemberId(refreshToken));
+            return createAccessToken(Long.parseLong(jwtTokenProvider.getMemberId(refreshToken)));
         }
         throw new RestApiException(TOKEN_INCORRECT.getErrorCode());
     }

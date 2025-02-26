@@ -33,8 +33,8 @@ public class EmailService implements AuthService {
 
         validatePassword(request, member);
 
-        String accessToken = tokenService.createAccessToken(String.valueOf(member.getId()));
-        String refreshToken = tokenService.createRefreshToken(String.valueOf(member.getId()));
+        String accessToken = tokenService.createAccessToken(member.getId());
+        String refreshToken = tokenService.createRefreshToken(member.getId());
 
         return new LoginResponse(accessToken, refreshToken);
     }
