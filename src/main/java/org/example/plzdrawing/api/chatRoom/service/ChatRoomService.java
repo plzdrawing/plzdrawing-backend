@@ -3,7 +3,7 @@ package org.example.plzdrawing.api.chatRoom.service;
 import java.util.List;
 import org.example.plzdrawing.api.chatRoom.dto.request.CreateChatRoomRequest;
 import org.example.plzdrawing.api.chatRoom.dto.response.ResponseChatRoom;
-import org.example.plzdrawing.domain.chat.message.Chat;
+import org.example.plzdrawing.domain.chat.Chat;
 
 public interface ChatRoomService {
 

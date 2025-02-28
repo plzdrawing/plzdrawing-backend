@@ -1,4 +1,4 @@
-package org.example.plzdrawing.domain.chat.message;
+package org.example.plzdrawing.domain.chat;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package org.example.plzdrawing.domain.chat.message;
+package org.example.plzdrawing.domain.chat;
 
 import java.sql.Timestamp;
 import lombok.AccessLevel;

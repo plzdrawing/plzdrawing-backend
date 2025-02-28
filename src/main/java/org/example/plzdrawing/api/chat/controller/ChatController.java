@@ -39,5 +39,5 @@ public class ChatController {
         return ResponseEntity.ok(chatPage);
     }
 
-    //TODO 정렬 인덱싱-날짜 / 이미지,파일 저장 및 조회 / 채팅전송 validation
+    //TODO 정렬 인덱싱-날짜 / 채팅전송 validation
 }

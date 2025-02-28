@@ -1,4 +1,4 @@
-package org.example.plzdrawing.domain.chat.room;
+package org.example.plzdrawing.domain.chatroom;
 
 import lombok.AccessLevel;
 import lombok.Builder;

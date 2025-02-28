@@ -1,7 +1,7 @@
 package org.example.plzdrawing.api.chat.dto.request;
 
 import lombok.Getter;
-import org.example.plzdrawing.domain.chat.message.MessageType;
+import org.example.plzdrawing.domain.chat.MessageType;
 
 @Getter
 public class ChatDto {

@@ -3,7 +3,7 @@ package org.example.plzdrawing.api.chat.dto.converter;
 import java.sql.Timestamp;
 import org.example.plzdrawing.api.chat.dto.request.ChatDto;
 import org.example.plzdrawing.api.chat.dto.response.ResponseChat;
-import org.example.plzdrawing.domain.chat.message.Chat;
+import org.example.plzdrawing.domain.chat.Chat;
 
 public class ChatConverter {
 
