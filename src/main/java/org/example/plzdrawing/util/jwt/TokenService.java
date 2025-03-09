@@ -1,7 +1,6 @@
 package org.example.plzdrawing.util.jwt;
 
-import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.INVALID_TOKEN;
-import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.TOKEN_INCORRECT;
+import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.*;
 
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.common.exception.RestApiException;
@@ -25,12 +24,12 @@ public class TokenService {
         if (jwtTokenProvider.validationRefreshToken(refreshToken)) {
             return createAccessToken(jwtTokenProvider.getMemberId(refreshToken));
         }
-        throw new RestApiException(TOKEN_INCORRECT.getErrorCode());
+        throw new RestApiException(TOKEN_INCORRECT);
     }
 
     private String removePrefix(String tokenHeader) {
         if (!tokenHeader.startsWith("Bearer ")) {
-            throw new RestApiException(INVALID_TOKEN.getErrorCode());
+            throw new RestApiException(INVALID_TOKEN);
         }
 
         return tokenHeader.substring(7);

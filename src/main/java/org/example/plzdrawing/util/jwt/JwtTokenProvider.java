@@ -63,9 +63,9 @@ public class JwtTokenProvider {
                     .parseSignedClaims(token);
             return true;
         } catch (ExpiredJwtException e) {
-            throw new RestApiException(TOKEN_EXPIRED.getErrorCode());
+            throw new RestApiException(TOKEN_EXPIRED);
         } catch (JwtException e) {
-            throw new RestApiException(INVALID_TOKEN.getErrorCode());
+            throw new RestApiException(INVALID_TOKEN);
         }
     }
 
@@ -83,9 +83,9 @@ public class JwtTokenProvider {
 
             return storedToken != null && storedToken.equals(refreshToken);
         } catch (ExpiredJwtException e) {
-            throw new RestApiException(TOKEN_EXPIRED.getErrorCode());
+            throw new RestApiException(TOKEN_EXPIRED);
         } catch (JwtException e) {
-            throw new RestApiException(INVALID_TOKEN.getErrorCode());
+            throw new RestApiException(INVALID_TOKEN);
         }
     }
 

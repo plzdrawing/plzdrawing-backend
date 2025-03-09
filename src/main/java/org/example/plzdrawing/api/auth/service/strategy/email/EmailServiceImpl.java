@@ -1,14 +1,13 @@
 package org.example.plzdrawing.api.auth.service.strategy.email;
 
-import static org.example.plzdrawing.api.auth.exception.AuthErrorCode.AUTH_CODE_INCORRECT;
-import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
-import static org.example.plzdrawing.api.member.exception.MemberErrorCode.PASSWORD_INCORRECT;
+import org.example.plzdrawing.api.member.exception.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
 import org.example.plzdrawing.api.auth.dto.request.SignUpRequest;
 import org.example.plzdrawing.api.auth.dto.response.LoginResponse;
 import org.example.plzdrawing.api.auth.dto.response.SignUpResponse;
+import org.example.plzdrawing.api.auth.exception.AuthErrorCode;
 import org.example.plzdrawing.api.auth.repository.AuthCodeRedisRepository;
 import org.example.plzdrawing.api.auth.service.mail.MailService;
 import org.example.plzdrawing.common.exception.RestApiException;
@@ -36,7 +35,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public LoginResponse login(LoginRequest request) {
         Member member = memberRepository.findByEmailAndProvider(request.getEmail(),
-                request.getProvider()).orElseThrow(()->new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
+                request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         validatePassword(request, member);
 
@@ -88,7 +87,7 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     public Boolean reissuePassword(String email, String authCode) {
         if (!verifyReissueAuthCode(email, authCode)) {
-            throw new RestApiException(AUTH_CODE_INCORRECT.getErrorCode());
+            throw new RestApiException(AuthErrorCode.AUTH_CODE_INCORRECT);
         }
         String password = randomGenerator.generateTemporaryPassword();
         updatePassword(email, password);
@@ -100,7 +99,7 @@ public class EmailServiceImpl implements EmailService {
         password = passwordEncoder.encode(password);
 
         Member member = memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
-                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
+                .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         member.updatePassword(password);
     }
@@ -117,7 +116,7 @@ public class EmailServiceImpl implements EmailService {
 
     private void validatePassword(LoginRequest request, Member member) {
         if (!isPasswordMatching(request.getPassword(), member.getPassword())) {
-            throw new RestApiException(PASSWORD_INCORRECT.getErrorCode());
+            throw new RestApiException(MemberErrorCode.PASSWORD_INCORRECT);
         }
     }
 
