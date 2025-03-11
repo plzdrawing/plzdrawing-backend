@@ -11,13 +11,11 @@ import org.springframework.validation.FieldError;
 public class ValidationError {
     private final String field;
     private final String message;
-    private final String rejectedValue;
 
     public static ValidationError of(final FieldError fieldError) {
         return ValidationError.builder()
                 .field(fieldError.getField())
                 .message(fieldError.getDefaultMessage())
-                .rejectedValue(String.valueOf(fieldError.getRejectedValue()))
                 .build();
     }
 }

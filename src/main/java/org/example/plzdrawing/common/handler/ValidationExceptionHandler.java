@@ -39,11 +39,10 @@ public class ValidationExceptionHandler {
 
         List<ValidationError> errors = ex.getParameterValidationResults().stream()
                 .flatMap(result -> result.getResolvableErrors().stream()
-                .map(error -> new ValidationError(
-                        result.getMethodParameter().getParameterName(),
-                        error.getDefaultMessage(),
-                        result.getArgument().toString())
-                )).toList();
+                    .map(error -> new ValidationError(
+                            result.getMethodParameter().getParameterName(),
+                            error.getDefaultMessage())
+                    )).toList();
 
         return makeErrorResponse(errors);
     }
