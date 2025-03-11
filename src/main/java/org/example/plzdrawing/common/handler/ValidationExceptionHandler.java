@@ -31,6 +31,23 @@ public class ValidationExceptionHandler {
         return makeErrorResponse(bindingResult);
     }
 
+    // requestParam 검증 시 발생되는 예외 처리
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+        log.info("handleHandlerMethodValidationException");
+
+        List<ValidationError> errors = ex.getParameterValidationResults().stream()
+                .flatMap(result -> result.getResolvableErrors().stream()
+                .map(error -> new ValidationError(
+                        result.getMethodParameter().getParameterName(),
+                        error.getDefaultMessage(),
+                        result.getArgument().toString())
+                )).toList();
+
+        return makeErrorResponse(errors);
+    }
+
     private ErrorResponse makeErrorResponse(BindingResult bindingResult) {
         List<ValidationError> errors = bindingResult.getFieldErrors()
                                         .stream().map(ValidationError::of).toList();
@@ -43,4 +60,45 @@ public class ValidationExceptionHandler {
         return new ErrorResponse(CommonErrorCode.INVALID_FIELD, errors);
     }
 
+    // TODO : not yet 1
+    /*private static final HashMap<String, String> messageTypeMismatchException = new HashMap<>();
+    static {
+        messageTypeMismatchException.put("date", "date의 format은 yyyy-MM-dd 입니다.");
+    }
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public BaseResponse<?> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        log.info("MethodArgumentTypeMismatchException");
+
+        String message = messageTypeMismatchException.get(ex.getName());
+        if(message == null) message = ex.getMessage();
+
+        return new BaseResponse<>(CommonResponseStatus.METHOD_ARGUMENT_TYPE_MISMATCH,
+                new ValidationError(ex.getName(), message, String.valueOf(ex.getValue())));
+    }*/
+
+
+    // TODO : not yet 2
+   /* @ExceptionHandler(InvalidFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseResponse<?> handleHttpMessageNotReadableException(InvalidFormatException ex) {
+        log.info("InvalidFormatException");
+        ErrorsResponse build = ErrorsResponse.builder()
+                .errors(
+                        Collections.singletonList(new ValidationError(
+                                extractFieldName(ex.getPath().toString()),
+                                ex.getOriginalMessage(),
+                                (String) ex.getValue()))).build();
+
+        return new BaseResponse<>(CommonResponseStatus.INVALID_FIELD, build);
+    }
+
+    private static String extractFieldName(String path) {
+        int startIndex = path.lastIndexOf("[\"");
+        int endIndex = path.lastIndexOf("\"]");
+        if (startIndex != -1 && endIndex != -1) {
+            return path.substring(startIndex + 2, endIndex);
+        }
+        return path;
+    }*/
 }
