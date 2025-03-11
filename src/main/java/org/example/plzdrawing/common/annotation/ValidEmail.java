@@ -3,7 +3,6 @@ package org.example.plzdrawing.common.annotation;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import org.example.plzdrawing.common.validator.EmailValidator;
-import org.springframework.validation.annotation.Validated;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,7 +12,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EmailValidator.class)
-@Validated
 public @interface ValidEmail {
     String message() default "이메일 형식이 올바르지 않습니다.";
     Class<?>[] groups() default {};
