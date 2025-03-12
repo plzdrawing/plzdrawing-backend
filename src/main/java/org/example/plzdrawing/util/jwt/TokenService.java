@@ -24,12 +24,12 @@ public class TokenService {
         if (jwtTokenProvider.validationRefreshToken(refreshToken)) {
             return createAccessToken(jwtTokenProvider.getMemberId(refreshToken));
         }
-        throw new RestApiException(TOKEN_INCORRECT);
+        throw new RestApiException(TOKEN_INCORRECT.getErrorCode());
     }
 
     private String removePrefix(String tokenHeader) {
         if (!tokenHeader.startsWith("Bearer ")) {
-            throw new RestApiException(INVALID_TOKEN);
+            throw new RestApiException(INVALID_TOKEN.getErrorCode());
         }
 
         return tokenHeader.substring(7);

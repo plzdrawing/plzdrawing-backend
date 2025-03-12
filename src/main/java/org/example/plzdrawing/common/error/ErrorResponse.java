@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"code", "message", "errors"})
 public class ErrorResponse {
 
-    private final int code;
+    private final String code;
     private final String message;
 
     @JsonInclude(Include.NON_EMPTY)

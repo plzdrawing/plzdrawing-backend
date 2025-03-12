@@ -30,7 +30,7 @@ public class RateLimitAspect {
         int currentCount = currentCountStr == null ? 0 : Integer.parseInt(currentCountStr);
 
         if (currentCount >= maxCount) {
-            throw new RestApiException(EXCEED_REQUEST_COUNT);
+            throw new RestApiException(EXCEED_REQUEST_COUNT.getErrorCode());
         }
 
         redisTemplate.opsForValue().increment(redisKey);
