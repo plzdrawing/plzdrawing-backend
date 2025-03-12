@@ -51,12 +51,12 @@ public class ValidationExceptionHandler {
         List<ValidationError> errors = bindingResult.getFieldErrors()
                                         .stream().map(ValidationError::of).toList();
 
-        return new ErrorResponse(CommonErrorCode.INVALID_FIELD, errors);
+        return new ErrorResponse(CommonErrorCode.INVALID_FIELD.getErrorCode(), errors);
     }
 
     private ErrorResponse makeErrorResponse(List<ValidationError> errors) {
 
-        return new ErrorResponse(CommonErrorCode.INVALID_FIELD, errors);
+        return new ErrorResponse(CommonErrorCode.INVALID_FIELD.getErrorCode(), errors);
     }
 
     // TODO : not yet 1

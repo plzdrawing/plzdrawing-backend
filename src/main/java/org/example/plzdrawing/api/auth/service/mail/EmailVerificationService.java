@@ -26,7 +26,7 @@ public class EmailVerificationService implements MailService {
     @RateLimit(feature = SIGN_UP)
     public void sendCodeEmail(String email) {
         if (isMemberExistsByEmailAndProvider(email)) {
-            throw new RestApiException(MemberErrorCode.MEMBER_ALREADY_EXIST);
+            throw new RestApiException(MemberErrorCode.MEMBER_ALREADY_EXIST.getErrorCode());
         }
 
         String authNumber = randomGenerator.makeSecureRandomNumber();
@@ -41,7 +41,7 @@ public class EmailVerificationService implements MailService {
     @RateLimit(feature = RECOVERY_PASSWORD)
     public void sendEmailForRecoveryPassword(String email) {
         if (!isMemberExistsByEmailAndProvider(email)) {
-            throw new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND);
+            throw new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode());
         }
 
         String reissueAuthNumber = randomGenerator.makeSecureRandomNumber();

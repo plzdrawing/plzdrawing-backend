@@ -24,6 +24,6 @@ public class MemberServiceImpl implements MemberService {
 
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(()->new RestApiException(MEMBER_NOT_FOUND));
+                .orElseThrow(()->new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
     }
 }

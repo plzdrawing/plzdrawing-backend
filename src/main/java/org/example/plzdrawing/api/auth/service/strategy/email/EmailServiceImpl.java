@@ -35,7 +35,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public LoginResponse login(LoginRequest request) {
         Member member = memberRepository.findByEmailAndProvider(request.getEmail(),
-                request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND));
+                request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
 
         validatePassword(request, member);
 
@@ -87,7 +87,7 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     public Boolean reissuePassword(String email, String authCode) {
         if (!verifyReissueAuthCode(email, authCode)) {
-            throw new RestApiException(AuthErrorCode.AUTH_CODE_INCORRECT);
+            throw new RestApiException(AuthErrorCode.AUTH_CODE_INCORRECT.getErrorCode());
         }
         String password = randomGenerator.generateTemporaryPassword();
         updatePassword(email, password);
@@ -99,7 +99,7 @@ public class EmailServiceImpl implements EmailService {
         password = passwordEncoder.encode(password);
 
         Member member = memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
-                .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
 
         member.updatePassword(password);
     }
@@ -116,7 +116,7 @@ public class EmailServiceImpl implements EmailService {
 
     private void validatePassword(LoginRequest request, Member member) {
         if (!isPasswordMatching(request.getPassword(), member.getPassword())) {
-            throw new RestApiException(MemberErrorCode.PASSWORD_INCORRECT);
+            throw new RestApiException(MemberErrorCode.PASSWORD_INCORRECT.getErrorCode());
         }
     }
 
