@@ -1,6 +1,8 @@
 package org.example.plzdrawing.api.auth.controller;
 
 import java.net.URI;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
 import org.example.plzdrawing.api.auth.dto.request.SignUpRequest;
@@ -10,7 +12,6 @@ import org.example.plzdrawing.api.auth.dto.response.SignUpResponse;
 import org.example.plzdrawing.api.auth.service.strategy.AuthService;
 import org.example.plzdrawing.util.jwt.TokenService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -26,7 +27,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/v1/signup")
-    public ResponseEntity<SignUpResponse> signUp(@RequestBody @Validated SignUpRequest request) {
+    public ResponseEntity<SignUpResponse> signUp(@RequestBody @Valid SignUpRequest request) {
         AuthService authService = strategyManager.getAuthService(request.getProvider());
 
         Long savedId = authService.signUp(request).getMemberId();
@@ -39,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/v1/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         AuthService authService = strategyManager.getAuthService(request.getProvider());
 
         return ResponseEntity.ok(authService.login(request));
