@@ -8,10 +8,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum RateLimitErrorCode {//3
+public enum RateLimitErrorCode {
 
-    EXCEED_REQUEST_COUNT(new BaseErrorCode(4293, HttpStatus.TOO_MANY_REQUESTS, "요청 횟수를 초과하였습니다."))
+    EXCEED_REQUEST_COUNT(new BaseErrorCode("RATELIMIT_001", HttpStatus.TOO_MANY_REQUESTS, "요청 횟수를 초과하였습니다."))
     ;
-
     private final ErrorCode errorCode;
 }

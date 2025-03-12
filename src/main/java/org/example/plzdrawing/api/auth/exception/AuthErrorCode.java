@@ -8,9 +8,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum AuthErrorCode {//2
-    AUTH_CODE_INCORRECT(new BaseErrorCode(4012, HttpStatus.UNAUTHORIZED, "인증번호가 일치하지 않습니다."))
+public enum AuthErrorCode{
+    AUTH_CODE_INCORRECT(new BaseErrorCode("AUTH_001", HttpStatus.UNAUTHORIZED, "인증번호가 일치하지 않습니다."))
     ;
-
     private final ErrorCode errorCode;
 }

@@ -1,19 +1,17 @@
 package org.example.plzdrawing.api.auth.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.example.plzdrawing.api.auth.dto.request.CodeGenerateRequest;
 import org.example.plzdrawing.api.auth.dto.request.CodeGenerateForPasswordRequest;
+import org.example.plzdrawing.api.auth.dto.request.CodeGenerateRequest;
 import org.example.plzdrawing.api.auth.dto.request.PasswordResetRequest;
 import org.example.plzdrawing.api.auth.dto.request.UpdatePasswordRequest;
 import org.example.plzdrawing.api.auth.service.strategy.email.EmailService;
+import org.example.plzdrawing.common.annotation.ValidEmail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,13 +21,13 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/v1/email-verification")
-    public ResponseEntity<Void> sendEmailForVerification(@RequestBody CodeGenerateRequest request) {
+    public ResponseEntity<Void> sendEmailForVerification(@RequestBody @Valid CodeGenerateRequest request) {
         emailService.sendCode(request.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/v1/email-verification")
-    public ResponseEntity<Boolean> verifyEmail(@RequestParam("email") String email,
+    public ResponseEntity<Boolean> verifyEmail(@RequestParam("email") @ValidEmail String email,
             @RequestParam("code") String authCode) {
 
         return ResponseEntity.ok(emailService.verifyAuthCode(email, authCode));
@@ -44,13 +42,13 @@ public class EmailController {
     }
 
     @PatchMapping("/v1/password/reissue")
-    public ResponseEntity<Boolean> reissuePassword(@RequestBody PasswordResetRequest request) {
+    public ResponseEntity<Boolean> reissuePassword(@RequestBody @Valid PasswordResetRequest request) {
 
         return ResponseEntity.ok(emailService.reissuePassword(request.getEmail(), request.getAuthCode()));
     }
 
     @PatchMapping("/v1/password/update")
-    public ResponseEntity<Void> updatePassword(@RequestBody UpdatePasswordRequest request) {
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid UpdatePasswordRequest request) {
 
         emailService.updatePassword(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
