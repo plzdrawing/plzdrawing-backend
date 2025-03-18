@@ -1,7 +1,6 @@
 package org.example.plzdrawing.util.jwt;
 
-import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.INVALID_TOKEN;
-import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.TOKEN_INCORRECT;
+import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.*;
 
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.common.exception.RestApiException;

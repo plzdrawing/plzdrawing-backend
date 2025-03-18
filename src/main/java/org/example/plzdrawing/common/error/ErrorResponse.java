@@ -6,33 +6,29 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.FieldError;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @Getter
 @Builder
 @RequiredArgsConstructor
+@JsonPropertyOrder({"code", "message", "errors"})
 public class ErrorResponse {
 
-    private final int code;
+    private final String code;
     private final String message;
 
     @JsonInclude(Include.NON_EMPTY)
     private final List<ValidationError> errors;
 
-    @Getter
-    @Builder
-    @RequiredArgsConstructor
-    public static class ValidationError {
+    public ErrorResponse(ErrorCode errorCode, List<ValidationError> errors) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+        this.errors = errors;
+    }
 
-        private final String field;
-        private final String message;
-
-        public static ValidationError of(final FieldError fieldError) {
-            return ValidationError.builder()
-                    .field(fieldError.getField())
-                    .message(fieldError.getDefaultMessage())
-                    .build();
-        }
-
+    public ErrorResponse(ErrorCode errorCode) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+        this.errors = null;
     }
 }

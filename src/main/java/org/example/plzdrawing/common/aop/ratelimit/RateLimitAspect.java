@@ -1,7 +1,5 @@
 package org.example.plzdrawing.common.aop.ratelimit;
 
-import static org.example.plzdrawing.common.aop.ratelimit.RateLimitErrorCode.*;
-
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,6 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+
+import static org.example.plzdrawing.common.aop.ratelimit.RateLimitErrorCode.EXCEED_REQUEST_COUNT;
 
 @Aspect
 @Component
