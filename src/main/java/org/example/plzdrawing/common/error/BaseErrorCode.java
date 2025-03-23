@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public class BaseErrorCode implements ErrorCode{
 
-    private final int code;
+    private final String code;
     private final HttpStatus httpStatus;
     private final String message;
 }
