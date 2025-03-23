@@ -64,7 +64,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional(readOnly = true)
+    public ChatRoom findById(String chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RestApiException(CHATROOM_NOT_FOUND.getErrorCode()));
+    }
 
     private String pickCounterpartNickname(Long memberId, ChatRoom chatRoom) {
         if(Objects.equals(memberId, chatRoom.getSellerId())) {

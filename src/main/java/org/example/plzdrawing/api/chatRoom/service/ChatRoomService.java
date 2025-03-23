@@ -4,6 +4,7 @@ import java.util.List;
 import org.example.plzdrawing.api.chatRoom.dto.request.CreateChatRoomRequest;
 import org.example.plzdrawing.api.chatRoom.dto.response.ResponseChatRoom;
 import org.example.plzdrawing.domain.chat.Chat;
+import org.example.plzdrawing.domain.chatroom.ChatRoom;
 
 public interface ChatRoomService {
 
@@ -12,4 +13,6 @@ public interface ChatRoomService {
     String createChatRoom(Long memberId, CreateChatRoomRequest request);
 
     void updateLastMessage(Chat chat);
+
+    ChatRoom findById(String chatRoomId);
 }
