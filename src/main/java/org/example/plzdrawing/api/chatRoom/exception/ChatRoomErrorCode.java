@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ChatRoomErrorCode {//2
-    CHATROOM_NOT_FOUND(new BaseErrorCode(4042, HttpStatus.NOT_FOUND,"존재하지 않는 채팅방입니다"))
+public enum ChatRoomErrorCode {
+    CHATROOM_NOT_FOUND(new BaseErrorCode("CHATROOM_001", HttpStatus.NOT_FOUND,"존재하지 않는 채팅방입니다"))
     ;
 
     private final ErrorCode errorCode;
