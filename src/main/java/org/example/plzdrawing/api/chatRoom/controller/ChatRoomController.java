@@ -37,6 +37,4 @@ public class ChatRoomController {
         List<ResponseChatRoom> chatRooms = chatRoomService.getChatRooms(customUser.getMemberId());
         return ResponseEntity.ok(chatRooms);
     }
-
-    //TODO 읽지 않은 채팅 개수
 }

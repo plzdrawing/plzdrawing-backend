@@ -21,6 +21,7 @@ public class Chat {
     private Long senderId;
     private String message;
     private MessageType messageType;
+    private boolean isRead;
 
     private String fileUrl;
     private String fileName;
@@ -37,10 +38,19 @@ public class Chat {
         this.senderId = senderId;
         this.message = message;
         this.messageType = messageType;
+        this.isRead = true;
         this.fileUrl = fileUrl;
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.mimeType = mimeType;
         this.timestamp = timestamp;
+    }
+
+    public String getDisplayContent() {
+        return messageType.getDisplayContent(message);
+    }
+
+    public void read(boolean b) {
+        isRead = b;
     }
 }

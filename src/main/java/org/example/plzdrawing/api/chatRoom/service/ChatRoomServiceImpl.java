@@ -13,6 +13,7 @@ import org.example.plzdrawing.api.chatRoom.dto.converter.ChatRoomConverter;
 import org.example.plzdrawing.api.chatRoom.dto.request.CreateChatRoomRequest;
 import org.example.plzdrawing.api.chatRoom.dto.response.ResponseChatRoom;
 import org.example.plzdrawing.api.chatRoom.exception.ChatRoomAlreadyExistsException;
+import org.example.plzdrawing.api.chatRoom.repository.UnreadCountRepository;
 import org.example.plzdrawing.api.member.service.MemberService;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.chat.Chat;
@@ -28,6 +29,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final MemberService memberService;
     private final ChatRoomRepository chatRoomRepository;
+    private final UnreadCountRepository unreadCountRepository;
+
     @Override
     @Transactional
     public String createChatRoom(Long memberId, CreateChatRoomRequest request) {
@@ -45,7 +48,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void updateLastMessage(Chat chat) {
         ChatRoom chatRoom = chatRoomRepository.findById(chat.getChatRoomId())
                 .orElseThrow(() -> new RestApiException(CHATROOM_NOT_FOUND.getErrorCode()));
-        chatRoom.updateLastMessage(chat.getMessage());
+        chatRoom.updateLastMessage(chat.getDisplayContent());
     }
 
     @Override
@@ -55,7 +58,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRooms.stream()
                 .map(chatRoom -> {
                     String counterpartNickname = pickCounterpartNickname(memberId,chatRoom);
-                    return ChatRoomConverter.fromEntity(chatRoom, counterpartNickname);
+                    int unreadCount = unreadCountRepository.getUnreadCount(chatRoom.getChatRoomId(), memberId);
+                    return ChatRoomConverter.fromEntity(chatRoom, counterpartNickname, unreadCount);
                 })
                 .collect(Collectors.toList());
     }
