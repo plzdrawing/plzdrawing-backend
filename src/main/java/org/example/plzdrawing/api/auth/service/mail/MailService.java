@@ -4,4 +4,5 @@ public interface MailService {
 
     void sendCodeEmail(String email);
     void sendEmailForRecoveryPassword(String email);
+    void sendTemporaryPassword(String email, String password);
 }
