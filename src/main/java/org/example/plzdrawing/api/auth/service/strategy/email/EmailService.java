@@ -8,5 +8,5 @@ public interface EmailService extends AuthService {
     Boolean verifyAuthCode(String email, String authCode);
     void sendEmailForRecoveryPassword(String email);
     Boolean reissuePassword(String email, String authCode);
-    void updatePassword(String email, String password);
+    void changePassword(String email, String nowPassword, String newPassword);
 }

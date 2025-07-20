@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
         Member member = memberRepository.findByEmailAndProvider(request.getEmail(),
                 request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
 
-        validatePassword(request, member);
+        validatePassword(request.getPassword(), member);
 
         String accessToken = tokenService.createAccessToken(String.valueOf(member.getId()));
         String refreshToken = tokenService.createRefreshToken(String.valueOf(member.getId()));
@@ -90,12 +90,22 @@ public class EmailServiceImpl implements EmailService {
             throw new RestApiException(AuthErrorCode.AUTH_CODE_INCORRECT.getErrorCode());
         }
         String password = randomGenerator.generateTemporaryPassword();
-        updatePassword(email, password);
+        savePassword(email, password);
+        mailService.sendTemporaryPassword(email, password);
         return true;
     }
 
+    @Transactional
     @Override
-    public void updatePassword(String email, String password) {
+    public void changePassword(String email, String password, String newPassword) {
+        Member member = memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
+                .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
+        validatePassword(password, member);
+
+        savePassword(email, password);
+    }
+
+    private void savePassword(String email, String password) {
         password = passwordEncoder.encode(password);
 
         Member member = memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
@@ -114,8 +124,8 @@ public class EmailServiceImpl implements EmailService {
         return code.equals(savedCode);
     }
 
-    private void validatePassword(LoginRequest request, Member member) {
-        if (!isPasswordMatching(request.getPassword(), member.getPassword())) {
+    private void validatePassword(String inputPassword, Member member) {
+        if (!isPasswordMatching(inputPassword, member.getPassword())) {
             throw new RestApiException(MemberErrorCode.PASSWORD_INCORRECT.getErrorCode());
         }
     }
