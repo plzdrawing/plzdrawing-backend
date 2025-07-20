@@ -3,19 +3,17 @@ package org.example.plzdrawing.api.auth.repository;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-@Component
-@RequiredArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class RefreshTokenRedisRepository {
 
     @Value("${jwt.refresh-expiration}")
     private Long EXPIRATION;
 
-    private final StringRedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void saveRefreshToken(String memberId, String jti, String refreshToken) {
         String redisId = createRedisId(memberId, jti);

@@ -39,8 +39,8 @@ public class EmailServiceImpl implements EmailService {
 
         validatePassword(request.getPassword(), member);
 
-        String accessToken = tokenService.createAccessToken(String.valueOf(member.getId()));
-        String refreshToken = tokenService.createRefreshToken(String.valueOf(member.getId()));
+        String accessToken = tokenService.createAccessToken(member.getId());
+        String refreshToken = tokenService.createRefreshToken(member.getId());
 
         return new LoginResponse(accessToken, refreshToken);
     }

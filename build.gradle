@@ -51,6 +51,15 @@ dependencies {
 
     //Mail
     implementation'org.springframework.boot:spring-boot-starter-mail'
+
+    //chat
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    //S3
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.3.0")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
+
 }
 
 test {

@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 public class CustomUser implements UserDetails {
 
-    private final String memberId;
+    private final Long memberId;
 
-    public CustomUser(String memberId) {
+    public CustomUser(Long memberId) {
         this.memberId = memberId;
     }
 

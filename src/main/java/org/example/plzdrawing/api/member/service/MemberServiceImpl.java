@@ -2,6 +2,7 @@ package org.example.plzdrawing.api.member.service;
 
 import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.member.Member;
@@ -25,5 +26,9 @@ public class MemberServiceImpl implements MemberService {
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(()->new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
+    }
+
+    public List<Member> findMembersByIds(List<Long> memberIds) {
+        return memberRepository.findByIdIn(memberIds);
     }
 }

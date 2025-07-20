@@ -37,6 +37,17 @@ spring:
           writetimeout: 5000
     auth-code-expiration: ${AUTH_CODE_EXPIRATION}
 
+  #S3
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+      region:
+        static: ${BUCKET_REGION}
+      s3:
+        bucket: ${BUCKET_NAME}
+        url-duration: ${PRESIGNED_URL_DURATION}
 
 #Swagger
 springdoc:
