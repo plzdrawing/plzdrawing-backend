@@ -50,7 +50,7 @@ public class EmailController {
     @PatchMapping("/v1/password/update")
     public ResponseEntity<Void> updatePassword(@RequestBody @Valid UpdatePasswordRequest request) {
 
-        emailService.changePassword(request.getEmail(), request.getNowPassword(), request.getNewPassword());
+        emailService.updatePassword(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
     }
 }

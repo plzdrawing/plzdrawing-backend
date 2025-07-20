@@ -51,16 +51,6 @@ public class EmailVerificationService implements MailService {
         authCodeRedisRepository.saveReissueAuthNumber(email, reissueAuthNumber);
     }
 
-    public void sendTemporaryPassword(String email, String password) {
-        if (!isMemberExistsByEmailAndProvider(email)) {
-            throw new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode());
-        }
-
-        String title = "소일거리 드로잉 임시 비밀번호 발급 안내드립니다.";
-        String content = "새 비밀번호는 " + password + "입니다.";
-        sendMailService.sendEmail(email, title, content);
-    }
-
     private boolean isMemberExistsByEmailAndProvider(String email) {
         return memberService.isMemberExistsByEmailAndProvider(email, EMAIL);
     }

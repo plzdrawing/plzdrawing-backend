@@ -10,8 +10,5 @@ public class UpdatePasswordRequest {
     private String email;
 
     @ValidPassword
-    private String nowPassword;
-
-    @ValidPassword
-    private String newPassword;
+    private String password;
 }
