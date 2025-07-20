@@ -102,7 +102,7 @@ public class EmailServiceImpl implements EmailService {
                 .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
         validatePassword(password, member);
 
-        savePassword(email, password);
+        savePassword(email, newPassword);
     }
 
     private void savePassword(String email, String password) {
