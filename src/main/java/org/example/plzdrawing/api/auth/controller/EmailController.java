@@ -10,6 +10,7 @@ import org.example.plzdrawing.api.auth.dto.request.PasswordResetRequest;
 import org.example.plzdrawing.api.auth.dto.request.UpdatePasswordRequest;
 import org.example.plzdrawing.api.auth.service.strategy.email.EmailService;
 import org.example.plzdrawing.common.annotation.ValidEmail;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,9 @@ public class EmailController {
     @Operation(summary = "이메일 인증", description = "verifyEmail")
     public ResponseEntity<Boolean> verifyEmail(@RequestParam("email") @ValidEmail String email,
             @RequestParam("code") String authCode) {
-
-        return ResponseEntity.ok(emailService.verifyAuthCode(email, authCode));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + emailService.verifyAuthCode(email, authCode)) // 헤더에 추가
+                .body(true);
     }
 
     @PostMapping("/v1/password/reissue")

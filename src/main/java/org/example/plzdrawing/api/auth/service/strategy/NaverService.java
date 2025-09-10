@@ -1,6 +1,7 @@
 package org.example.plzdrawing.api.auth.service.strategy;
 
 import lombok.RequiredArgsConstructor;
+import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
 import org.example.plzdrawing.api.auth.dto.request.SignUpRequest;
 import org.example.plzdrawing.api.auth.dto.response.LoginResponse;
@@ -20,7 +21,7 @@ public class NaverService implements AuthService{
     }
 
     @Override
-    public SignUpResponse signUp(SignUpRequest request) {
+    public SignUpResponse signUp(CustomUser customUser, SignUpRequest request) {
         return null;
     }
 

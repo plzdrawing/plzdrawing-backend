@@ -1,9 +1,12 @@
 package org.example.plzdrawing.util.jwt;
 
+import static org.example.plzdrawing.api.auth.exception.AuthErrorCode.MEMBER_NOT_EXIST;
 import static org.example.plzdrawing.util.jwt.exception.JwtErrorCode.*;
 
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.common.exception.RestApiException;
+import org.example.plzdrawing.domain.Role;
+import org.example.plzdrawing.domain.member.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,8 +14,9 @@ import org.springframework.stereotype.Service;
 public class TokenService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    public String createAccessToken(String memberId) {
-        return jwtTokenProvider.createAccessToken(memberId);
+    private final MemberRepository memberRepository;
+    public String createAccessToken(String memberId, Role role) {
+        return jwtTokenProvider.createAccessToken(memberId, role);
     }
 
     public String createRefreshToken(String memberId) {
@@ -21,8 +25,13 @@ public class TokenService {
 
     public String reissue(String tokenHeader) {
         String refreshToken = removePrefix(tokenHeader);
+
         if (jwtTokenProvider.validationRefreshToken(refreshToken)) {
-            return createAccessToken(jwtTokenProvider.getMemberId(refreshToken));
+            Long memberId = Long.parseLong(jwtTokenProvider.getMemberId(refreshToken));
+            Role role = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new RestApiException(MEMBER_NOT_EXIST.getErrorCode()))
+                    .getRole();
+            return createAccessToken(memberId.toString(), role);
         }
         throw new RestApiException(TOKEN_INCORRECT.getErrorCode());
     }

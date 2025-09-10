@@ -4,13 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.example.plzdrawing.common.annotation.ValidEmail;
 import org.example.plzdrawing.common.annotation.ValidPassword;
-import org.example.plzdrawing.domain.member.Provider;
 
 @Getter
 public class SignUpRequest {
-
-    @Schema(description = "제공자", example = "EMAIL / KAKAO / NAVER")
-    private Provider provider;
 
     @ValidEmail
     @Schema(description = "이메일", example = "abc@def.com")
@@ -22,4 +18,13 @@ public class SignUpRequest {
 
     @Schema(description = "닉네임", example = "abc")
     private String nickName;
+
+    @Schema(description = "약관동의(개인정보 수집 및 이용)", example = "true")
+    private Boolean personalInfoConsent;
+
+    @Schema(description = "이용정책 동의", example = "true")
+    private Boolean acceptTermsOfUse;
+
+    @Schema(description = "할인, 이벤트 소식 받기 동의", example = "false")
+    private Boolean marketingConsent;
 }

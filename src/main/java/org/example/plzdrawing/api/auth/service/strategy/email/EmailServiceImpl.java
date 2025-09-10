@@ -1,5 +1,11 @@
 package org.example.plzdrawing.api.auth.service.strategy.email;
 
+import static org.example.plzdrawing.api.auth.exception.AuthErrorCode.AUTH_CODE_INCORRECT;
+import static org.example.plzdrawing.api.auth.exception.AuthErrorCode.EXIST_EMAIL;
+import static org.example.plzdrawing.domain.Role.ROLE_MEMBER;
+import static org.example.plzdrawing.domain.Role.ROLE_TEMP;
+
+import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.member.exception.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
@@ -7,9 +13,9 @@ import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
 import org.example.plzdrawing.api.auth.dto.request.SignUpRequest;
 import org.example.plzdrawing.api.auth.dto.response.LoginResponse;
 import org.example.plzdrawing.api.auth.dto.response.SignUpResponse;
-import org.example.plzdrawing.api.auth.exception.AuthErrorCode;
 import org.example.plzdrawing.api.auth.repository.AuthCodeRedisRepository;
 import org.example.plzdrawing.api.auth.service.mail.MailService;
+import org.example.plzdrawing.api.member.service.MemberService;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.member.Member;
 import org.example.plzdrawing.domain.member.MemberRepository;
@@ -24,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
+    private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
@@ -39,7 +46,7 @@ public class EmailServiceImpl implements EmailService {
 
         validatePassword(request.getPassword(), member);
 
-        String accessToken = tokenService.createAccessToken(String.valueOf(member.getId()));
+        String accessToken = tokenService.createAccessToken(String.valueOf(member.getId()), ROLE_MEMBER);
         String refreshToken = tokenService.createRefreshToken(String.valueOf(member.getId()));
 
         return new LoginResponse(accessToken, refreshToken);
@@ -47,17 +54,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public SignUpResponse signUp(SignUpRequest request) {
+    public SignUpResponse signUp(CustomUser customUser, SignUpRequest request) {
+        Member member = memberService.findById(Long.parseLong(customUser.getMember().getId().toString()));
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Member member = Member.builder()
-                .email(request.getEmail())
-                .password(encodedPassword)
-                .provider(request.getProvider())
-                .nickname(request.getNickName())
-                .build();
-
-        Long savedId = memberRepository.save(member).getId();
-        return new SignUpResponse(savedId);
+        member.onboarding(request);
+        member.updatePassword(encodedPassword);
+        return new SignUpResponse(member.getId());
     }
 
     @Override
@@ -68,14 +70,23 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     @Override
     public void sendCode(String email) {
+        if(memberRepository.findByRoleAndProviderAndEmail(ROLE_MEMBER, Provider.EMAIL, email).isPresent()) {
+            throw new RestApiException(EXIST_EMAIL.getErrorCode());
+        }
         mailService.sendCodeEmail(email);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public Boolean verifyAuthCode(String email, String code) {
+    public String verifyAuthCode(String email, String code) {
         String savedCode = authCodeRedisRepository.findEmailAuthNumberByKey(email);
-        return isMatchingCode(code, savedCode);
+
+        if (!isMatchingCode(code, savedCode)) {
+            throw new RestApiException(AUTH_CODE_INCORRECT.getErrorCode());
+        }
+
+        Member member = memberRepository.save(Member.createTempMember(email, Provider.EMAIL));
+        return tokenService.createAccessToken(member.getId().toString(), ROLE_TEMP);
     }
 
     @Transactional
@@ -87,7 +98,7 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     public Boolean reissuePassword(String email, String authCode) {
         if (!verifyReissueAuthCode(email, authCode)) {
-            throw new RestApiException(AuthErrorCode.AUTH_CODE_INCORRECT.getErrorCode());
+            throw new RestApiException(AUTH_CODE_INCORRECT.getErrorCode());
         }
         String password = randomGenerator.generateTemporaryPassword();
         savePassword(email, password);
