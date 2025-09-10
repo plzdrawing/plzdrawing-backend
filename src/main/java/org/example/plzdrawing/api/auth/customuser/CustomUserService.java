@@ -3,6 +3,7 @@ package org.example.plzdrawing.api.auth.customuser;
 
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.member.service.MemberService;
+import org.example.plzdrawing.domain.member.Member;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class CustomUserService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        memberService.findById(Long.valueOf(username));
-        return new CustomUser(username);
+        Member member = memberService.findById(Long.valueOf(username));
+        return new CustomUser(member);
     }
 }

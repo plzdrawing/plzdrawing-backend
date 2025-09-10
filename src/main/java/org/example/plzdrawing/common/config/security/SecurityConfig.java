@@ -18,7 +18,14 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] AUTH_WHITELIST = {
-            "/**"
+            "/",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/api/auth/email/v1/**"
+    };
+
+    private static final String[] AUTH_TEMP = {
+        "/api/auth/v1/signup"
     };
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -30,9 +37,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequests) ->
-                        authorizeRequests.requestMatchers(AUTH_WHITELIST)
-                                .permitAll()
-                                .anyRequest().authenticated())
+                        authorizeRequests.requestMatchers(AUTH_WHITELIST).permitAll()
+                                .requestMatchers(AUTH_TEMP).hasRole("TEMP")
+                                .anyRequest().hasRole("MEMBER"))
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
