@@ -43,12 +43,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member savedMember = memberRepository.save(member);
 
             UserDTO userDto = new UserDTO(
-                    oAuth2Response.getProvidedId(),
                     Role.ROLE_MEMBER,
                     oAuth2Response.getName(),
                     oAuth2Response.getEmail(),
-                    oAuth2Response.getProfileImage(),
-                    registrationId,
                     savedMember.getId()
             );
             return new CustomOAuth2User(userDto);
@@ -61,12 +58,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member savedMember = memberRepository.save(newMember);
 
             UserDTO userDto = new UserDTO(
-                    oAuth2Response.getProvidedId(),
                     Role.ROLE_TEMP,
                     oAuth2Response.getName(),
                     oAuth2Response.getEmail(),
-                    oAuth2Response.getProfileImage(),
-                    registrationId,
                     savedMember.getId()
             );
             return new CustomOAuth2User(userDto);
