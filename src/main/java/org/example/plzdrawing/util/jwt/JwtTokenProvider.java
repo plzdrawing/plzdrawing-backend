@@ -15,7 +15,6 @@ import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.repository.RefreshTokenRedisRepository;
 import org.example.plzdrawing.common.exception.RestApiException;
-import org.example.plzdrawing.domain.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,7 @@ public class JwtTokenProvider {
 
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    public String createAccessToken(String memberId, Role role) {
+    public String createAccessToken(String memberId, String role) {
         return Jwts.builder()
                 .subject(memberId)
                 .claim("role", role)

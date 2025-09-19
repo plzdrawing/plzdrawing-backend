@@ -1,5 +1,8 @@
 package org.example.plzdrawing.common.config.security;
 
+import org.example.plzdrawing.common.config.web.WebConfig;
+import org.example.plzdrawing.common.oauth.CustomOAuth2UserService;
+import org.example.plzdrawing.common.oauth.handler.CustomSuccessHandler;
 import org.example.plzdrawing.util.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private static final String[] AUTH_WHITELIST = {
             "/",
             "/swagger-ui/**",
@@ -28,14 +28,21 @@ public class SecurityConfig {
         "/api/auth/v1/signup"
     };
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, WebConfig webConfig,
+            CustomOAuth2UserService customOAuth2UserService, JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomSuccessHandler customSuccessHandler) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
+                    httpSecurityOAuth2LoginConfigurer.userInfoEndpoint(
+                            userInfoEndpointConfig -> {
+                                userInfoEndpointConfig.userService(customOAuth2UserService);
+                            }
+                    ).successHandler(
+                            customSuccessHandler
+                    );
+                })
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests.requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers(AUTH_TEMP).hasRole("TEMP")

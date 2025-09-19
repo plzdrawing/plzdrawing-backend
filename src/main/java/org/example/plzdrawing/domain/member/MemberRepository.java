@@ -30,4 +30,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             @Param("role") Role role,
             @Param("threshold") LocalDateTime threshold
     );
+
+    Optional<Member> findByEmail(String email);
 }

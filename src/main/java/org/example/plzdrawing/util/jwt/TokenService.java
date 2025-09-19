@@ -16,7 +16,8 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     public String createAccessToken(String memberId, Role role) {
-        return jwtTokenProvider.createAccessToken(memberId, role);
+        String strRole = role.name();
+        return jwtTokenProvider.createAccessToken(memberId, strRole);
     }
 
     public String createRefreshToken(String memberId) {
