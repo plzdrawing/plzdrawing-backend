@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class KakaoService implements AuthService {
 
     @Override
-    public LoginResponse login(LoginRequest request) {
+    public Boolean login(LoginRequest request) {
         return null;
     }
 

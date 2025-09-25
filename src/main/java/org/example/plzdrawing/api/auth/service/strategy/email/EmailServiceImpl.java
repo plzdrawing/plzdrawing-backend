@@ -40,16 +40,16 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public LoginResponse login(LoginRequest request) {
+    public Boolean login(LoginRequest request) {
         Member member = memberRepository.findByEmailAndProvider(request.getEmail(),
                 request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
 
         validatePassword(request.getPassword(), member);
 
-        String accessToken = tokenService.createAccessToken(String.valueOf(member.getId()), ROLE_MEMBER);
-        String refreshToken = tokenService.createRefreshToken(String.valueOf(member.getId()));
+        tokenService.createAccessToken(String.valueOf(member.getId()), ROLE_MEMBER);
+        tokenService.createRefreshToken(String.valueOf(member.getId()));
 
-        return new LoginResponse(accessToken, refreshToken);
+        return true;
     }
 
     @Transactional
@@ -78,15 +78,15 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public String verifyAuthCode(String email, String code) {
+    public void verifyAuthCode(String email, String code) {
         String savedCode = authCodeRedisRepository.findEmailAuthNumberByKey(email);
 
         if (!isMatchingCode(code, savedCode)) {
             throw new RestApiException(AUTH_CODE_INCORRECT.getErrorCode());
         }
 
-        Member member = memberRepository.save(Member.createTempMember(email, Provider.EMAIL));
-        return tokenService.createAccessToken(member.getId().toString(), ROLE_TEMP);
+        Member member = memberRepository.save(Member.createTempMember("unknown", email, Provider.EMAIL));
+        tokenService.createAccessToken(member.getId().toString(), ROLE_TEMP);
     }
 
     @Transactional

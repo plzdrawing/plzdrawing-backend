@@ -15,13 +15,13 @@ public class TokenService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
-    public String createAccessToken(String memberId, Role role) {
+    public void createAccessToken(String memberId, Role role) {
         String strRole = role.name();
-        return jwtTokenProvider.createAccessToken(memberId, strRole);
+        jwtTokenProvider.createAccessToken(memberId, strRole);
     }
 
-    public String createRefreshToken(String memberId) {
-        return jwtTokenProvider.createRefreshToken(memberId);
+    public void createRefreshToken(String memberId) {
+        jwtTokenProvider.createRefreshToken(memberId);
     }
 
     public String reissue(String tokenHeader) {
@@ -32,7 +32,7 @@ public class TokenService {
             Role role = memberRepository.findById(memberId)
                     .orElseThrow(() -> new RestApiException(MEMBER_NOT_EXIST.getErrorCode()))
                     .getRole();
-            return createAccessToken(memberId.toString(), role);
+            createAccessToken(memberId.toString(), role);
         }
         throw new RestApiException(TOKEN_INCORRECT.getErrorCode());
     }

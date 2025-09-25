@@ -21,7 +21,8 @@ public class SecurityConfig {
             "/",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/api/auth/email/v1/**"
+            "/api/auth/email/v1/**",
+            "/api/oauth2/code/**"
     };
 
     private static final String[] AUTH_TEMP = {
@@ -34,16 +35,12 @@ public class SecurityConfig {
             CustomSuccessHandler customSuccessHandler) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
-                    httpSecurityOAuth2LoginConfigurer.userInfoEndpoint(
-                            userInfoEndpointConfig -> {
-                                userInfoEndpointConfig.userService(customOAuth2UserService);
-                            }
-                    ).successHandler(
-                            customSuccessHandler
-                    );
-                })
-                .authorizeHttpRequests((authorizeRequests) ->
+                .oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer.userInfoEndpoint(
+                        userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService)
+                ).successHandler(
+                        customSuccessHandler
+                ))
+                .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers(AUTH_TEMP).hasRole("TEMP")
                                 .anyRequest().hasRole("MEMBER"))

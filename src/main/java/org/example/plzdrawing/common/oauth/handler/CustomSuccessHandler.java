@@ -42,19 +42,17 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUser = (CustomOAuth2User) principal;
 
         String accessToken;
-        String refreshToken = tokenService.createRefreshToken(customUser.getUserId().toString());
+        tokenService.createRefreshToken(customUser.getUserId().toString());
 
         Optional<Member> optionalMember = getMemberByEmail(customUser.getEmail());
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            accessToken = tokenService.createAccessToken(member.getId().toString(), member.getRole());
+            tokenService.createAccessToken(member.getId().toString(), member.getRole());
         } else {
-            accessToken = tokenService.createAccessToken(customUser.getUserId().toString(), customUser.getRole());
+            tokenService.createAccessToken(customUser.getUserId().toString(), customUser.getRole());
         }
 
-        response.addHeader("access_token", "Bearer " + accessToken);
-        response.addHeader("refresh_token", "Bearer " + refreshToken);
         response.sendRedirect(memberRedirectUrl);
     }
 

@@ -39,21 +39,20 @@ public class AuthController {
     public ResponseEntity<SignUpResponse> signUp(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestBody @Valid SignUpRequest request) {
-        AuthService authService = strategyManager.getAuthService(Provider.EMAIL);
+        AuthService authService = strategyManager.getAuthService(customUser.getProvider());
         authService.signUp(customUser, request);
-        String accessToken = tokenService.createAccessToken(customUser.getMember().getId().toString(), Role.ROLE_MEMBER);
+        tokenService.createAccessToken(customUser.getMember().getId().toString(), Role.ROLE_MEMBER);
         URI location = ServletUriComponentsBuilder
                 .fromPath("/api/member/{memberId}")
                 .buildAndExpand(customUser.getMember().getId().toString())
                 .toUri();
         return ResponseEntity.
-                created(location)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken).build();
+                created(location).build();
     }
 
     @PostMapping("/v1/login")
     @Operation(summary = "로그인", description = "login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<Boolean> login(@RequestBody @Valid LoginRequest request) {
         AuthService authService = strategyManager.getAuthService(request.getProvider());
 
         return ResponseEntity.ok(authService.login(request));
@@ -61,9 +60,8 @@ public class AuthController {
 
     @PostMapping("/v1/token/refresh")
     @Operation(summary = "토큰 재발급", description = "reissue")
-    public ResponseEntity<ReissueResponse> reissue(@RequestHeader("Authorization") String tokenHeader) {
-        ReissueResponse response = new ReissueResponse(tokenService.reissue(tokenHeader));
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Boolean> reissue(@RequestHeader("Authorization") String tokenHeader) {
+        tokenService.reissue(tokenHeader);
+        return ResponseEntity.ok(true);
     }
 }
