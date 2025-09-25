@@ -5,6 +5,7 @@ import static org.example.plzdrawing.common.error.CommonErrorCode.INVALID_OAUTH2
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.common.exception.RestApiException;
+import org.example.plzdrawing.common.oauth.dto.GoogleResponse;
 import org.example.plzdrawing.common.oauth.dto.KakaoResponse;
 import org.example.plzdrawing.common.oauth.dto.OAuth2Response;
 import org.example.plzdrawing.common.oauth.dto.UserDTO;
@@ -30,6 +31,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = switch (registrationId) {
             case "kakao" -> new KakaoResponse(oAuth2User.getAttributes());
+            case "google" -> new GoogleResponse(oAuth2User.getAttributes());
             default -> throw new RestApiException(INVALID_OAUTH2_PROVIDER.getErrorCode());
         };
 
@@ -51,6 +53,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new CustomOAuth2User(userDto);
         } else {
             Member newMember = Member.createTempMember(
+                    oAuth2Response.getName(),
                     oAuth2Response.getEmail(),
                     oAuth2Response.getProvider()
             );

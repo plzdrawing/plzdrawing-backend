@@ -75,9 +75,9 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
-    public static Member createTempMember(String email, Provider provider) {
+    public static Member createTempMember(String nickName, String email, Provider provider) {
         return Member.builder()
-                .nickname("unknown")
+                .nickname(nickName)
                 .email(email)
                 .provider(provider)
                 .role(ROLE_TEMP)
