@@ -1,5 +1,7 @@
 #!/bin/bash
-
+set -a
+. /etc/environment
+set +a
 # JAR 파일명을 deploy.log에 기록.
 JAR_DIR_PATH=/home/ec2-user/plz/build/libs/
 BUILD_JAR=$(ls $JAR_DIR_PATH*.jar | grep -nv 'plain')
