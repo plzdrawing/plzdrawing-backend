@@ -5,7 +5,7 @@ import org.example.plzdrawing.api.auth.service.strategy.AuthService;
 public interface EmailService extends AuthService {
 
     void sendCode(String email);
-    String verifyAuthCode(String email, String authCode);
+    void verifyAuthCode(String email, String authCode);
     void sendEmailForRecoveryPassword(String email);
     Boolean reissuePassword(String email, String authCode);
     void changePassword(String email, String nowPassword, String newPassword);

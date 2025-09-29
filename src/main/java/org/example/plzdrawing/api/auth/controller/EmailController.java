@@ -33,8 +33,8 @@ public class EmailController {
     @Operation(summary = "이메일 인증", description = "verifyEmail")
     public ResponseEntity<Boolean> verifyEmail(@RequestParam("email") @ValidEmail String email,
             @RequestParam("code") String authCode) {
+        emailService.verifyAuthCode(email, authCode);
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + emailService.verifyAuthCode(email, authCode)) // 헤더에 추가
                 .body(true);
     }
 

@@ -13,7 +13,12 @@ public enum CommonErrorCode{
 
     // RequestParam exception
     EMPTY_REQUEST_PARAMETER(new BaseErrorCode("GLOBAL_003", HttpStatus.METHOD_NOT_ALLOWED,"Request Parameter가 존재하지 않습니다.")),
-    METHOD_ARGUMENT_TYPE_MISMATCH(new BaseErrorCode("GLOBAL_004", HttpStatus.METHOD_NOT_ALLOWED, "Request Parameter나 Path Variable의 유형이 불일치합니다."))
+    METHOD_ARGUMENT_TYPE_MISMATCH(new BaseErrorCode("GLOBAL_004", HttpStatus.METHOD_NOT_ALLOWED, "Request Parameter나 Path Variable의 유형이 불일치합니다.")),
+
+    //login
+    INVALID_OAUTH2_PROVIDER(new BaseErrorCode("OAUTH_001", HttpStatus.BAD_REQUEST, "지원하지 않는 소셜로그인 provider입니다.")),
+    OAUTH2_MISSING_EMAIL(new BaseErrorCode("OAUTH_002", HttpStatus.NOT_FOUND, "해당 소셜 계정에서 이메일 정보를 찾을 수 없습니다.")),
+    OAUTH2_MISSING_NICKNAME(new BaseErrorCode("OAUTH_003", HttpStatus.NOT_FOUND, "해당 소셜 계정에서 이름 정보를 찾을 수 없습니다."))
     ;
 
     private final ErrorCode errorCode;

@@ -6,6 +6,7 @@ import static org.example.plzdrawing.domain.Role.ROLE_TEMP;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -74,9 +75,9 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
-    public static Member createTempMember(String email, Provider provider) {
+    public static Member createTempMember(String nickName, String email, Provider provider) {
         return Member.builder()
-                .nickname("unknown")
+                .nickname(nickName)
                 .email(email)
                 .provider(provider)
                 .role(ROLE_TEMP)
@@ -89,6 +90,17 @@ public class Member extends BaseTimeEntity {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateUser(String email, String provider, String nickName) {
+        this.email = email;
+        if(Objects.equals(provider, "kakao")) {
+            this.provider = Provider.KAKAO;
+        }
+        else {
+            this.provider = Provider.EMAIL;
+        }
+        this.nickname = nickname;
     }
 
     public void onboarding(

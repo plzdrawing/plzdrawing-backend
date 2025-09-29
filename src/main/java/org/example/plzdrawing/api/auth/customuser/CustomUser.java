@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Getter;
 import org.example.plzdrawing.domain.member.Member;
+import org.example.plzdrawing.domain.member.Provider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,5 +33,9 @@ public class CustomUser implements UserDetails {
     @Override
     public String getUsername() {
         return null;
+    }
+
+    public Provider getProvider() {
+        return member.getProvider();
     }
 }

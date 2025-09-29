@@ -14,8 +14,8 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.repository.RefreshTokenRedisRepository;
+import org.example.plzdrawing.common.cookie.CookieService;
 import org.example.plzdrawing.common.exception.RestApiException;
-import org.example.plzdrawing.domain.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,17 +33,19 @@ public class JwtTokenProvider {
     private Long REFRESH_EXPIRATION_TIME;
 
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final CookieService cookieService;
 
-    public String createAccessToken(String memberId, Role role) {
-        return Jwts.builder()
+    public void createAccessToken(String memberId, String role) {
+        String accessToken =  Jwts.builder()
                 .subject(memberId)
                 .claim("role", role)
                 .signWith(getSigningKey())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .compact();
+        cookieService.createCookie("access_token", accessToken, EXPIRATION_TIME);
     }
 
-    public String createRefreshToken(String memberId) {
+    public void createRefreshToken(String memberId) {
         String jti = createUUID();
         String refreshToken =  Jwts.builder()
                 .subject(memberId)
@@ -52,9 +54,8 @@ public class JwtTokenProvider {
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
                 .compact();
 
+        cookieService.createCookie("refresh_token", refreshToken, REFRESH_EXPIRATION_TIME);
         refreshTokenRedisRepository.saveRefreshToken(String.valueOf(memberId), jti, refreshToken);
-
-        return refreshToken;
     }
 
     public boolean validationToken(String token) {

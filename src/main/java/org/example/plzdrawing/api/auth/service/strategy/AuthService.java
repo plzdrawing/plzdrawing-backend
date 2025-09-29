@@ -9,7 +9,7 @@ import org.example.plzdrawing.domain.member.Provider;
 
 public interface AuthService {
 
-    LoginResponse login(LoginRequest request);
+    Boolean login(LoginRequest request);
 
     SignUpResponse signUp(CustomUser customUser, SignUpRequest request);
 
