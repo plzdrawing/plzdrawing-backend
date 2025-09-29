@@ -1,45 +1,50 @@
 package org.example.plzdrawing.common.config.swagger;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.servers.Server;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.security.SecurityScheme.In;
-import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-
-@OpenAPIDefinition(
-        servers = @Server(url = "/", description = "Default Server URL"),
-        info = @Info(
-                title = "PlzDrawing 백엔드 API 명세",
-                description = "springdoc을 이용한 Swagger API 문서입니다.",
-                version = "1.0",
-                contact = @Contact(
-                        name = "springdoc 공식문서",
-                        url = "https://springdoc.org/"
-                )
-        )
-)
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
+@EnableWebMvc
 public class SwaggerConfig {
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI openAPI() {
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("JWT", bearerAuth()));
+                .servers(List.of(
+                        new io.swagger.v3.oas.models.servers.Server().url("http://localhost:8080").description("Local Server")
+                ))
+                .components(components())
+                .info(apiInfo())
+                .addSecurityItem(securityRequirement());
     }
 
-    public SecurityScheme bearerAuth() {
-        return new SecurityScheme()
-                .type(Type.HTTP)
-                .scheme("bearer")
-                .bearerFormat("JWT")
-                .in(In.HEADER)
-                .name(HttpHeaders.AUTHORIZATION);
+    private io.swagger.v3.oas.models.info.Info apiInfo() {
+        return new io.swagger.v3.oas.models.info.Info()
+                .title("Plzdrawing API Docs")
+                .description("플리즈드로잉 관련 spring 서버 Api Document 입니다.");
+    }
+
+    // JWT 토큰을 위한 보안 컴포넌트 설정
+    private Components components() {
+        String securityScheme = "JWT TOKEN";
+        return new Components()
+                .addSecuritySchemes(securityScheme, new SecurityScheme()
+                        .name(securityScheme)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("Bearer")
+                        .bearerFormat("JWT"));
+    }
+
+    // 보안 요구사항 설정
+    private SecurityRequirement securityRequirement() {
+        String securityScheme = "JWT TOKEN";
+        return new SecurityRequirement().addList(securityScheme);
     }
 }
