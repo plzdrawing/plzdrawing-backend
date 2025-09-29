@@ -36,6 +36,30 @@ spring:
           timeout: 5000
           writetimeout: 5000
     auth-code-expiration: ${AUTH_CODE_EXPIRATION}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+          kakao: # 클라이언트 ID/Secret 있는 provider 이름
+            client-name: ${KAKAO_CLIENT_NAME}
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+            client-authentication-method: ${KAKAO_CLIENT_AUTHENTICATION_METHOD}
+            authorization-grant-type: ${KAKAO_AUTHORIZATION_GRANT_TYPE}
+            scope:
+              - account_email
+              - profile_nickname
+        provider:
+          kakao:
+            authorization-uri: ${KAKAO_AUTHORIZATION_URI}
+            token-uri: ${KAKAO_TOKEN_URI}
+            user-info-uri: ${KAKAO_USER_INFO_URI}
+            user-name-attribute: ${KAKAO_USER_NAME_ATTRIBUTE}
 
 
 #Swagger
