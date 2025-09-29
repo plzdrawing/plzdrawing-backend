@@ -74,9 +74,18 @@ springdoc:
     tags-sorter: alpha
 server:
   port: 8080
+  reactive:
+    session:
+      cookie:
+        domain: ${COOKIE_DOMAIN}
+        secure: ${COOKIE_SECURE}
+        http-only: ${COOKIE_HTTP_ONLY}
+        same-site: ${COOKIE_SAME_SITE}
 
 #JWT
 jwt:
   secret: ${SECRET_KEY}
   access-expiration: ${ACCESS_EXPIRATION}
   refresh-expiration: ${REFRESH_EXPIRATION}
+
+member-redirect-url: ${MEMBER_REDIRECT_URL}
