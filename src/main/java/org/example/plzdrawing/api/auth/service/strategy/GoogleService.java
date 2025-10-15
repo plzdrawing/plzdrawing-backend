@@ -1,5 +1,6 @@
 package org.example.plzdrawing.api.auth.service.strategy;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
@@ -19,7 +20,7 @@ public class GoogleService implements AuthService{
     private final MemberService memberService;
 
     @Override
-    public Boolean login(LoginRequest request) {
+    public Boolean login(LoginRequest request, HttpServletResponse response) {
         return null;
     }
 

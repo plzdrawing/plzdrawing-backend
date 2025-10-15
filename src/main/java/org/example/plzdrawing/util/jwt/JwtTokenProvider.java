@@ -9,6 +9,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.UUID;
 import javax.crypto.SecretKey;
@@ -17,6 +18,8 @@ import org.example.plzdrawing.api.auth.repository.RefreshTokenRedisRepository;
 import org.example.plzdrawing.common.cookie.CookieService;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,17 +38,20 @@ public class JwtTokenProvider {
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final CookieService cookieService;
 
-    public void createAccessToken(String memberId, String role) {
+    public void createAccessToken(String memberId, String role, HttpServletResponse response) {
+        System.out.println("쿠키생성");
         String accessToken =  Jwts.builder()
                 .subject(memberId)
                 .claim("role", role)
                 .signWith(getSigningKey())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .compact();
-        cookieService.createCookie("access_token", accessToken, EXPIRATION_TIME);
+        ResponseCookie cookie = cookieService.createCookie("access_token", accessToken, EXPIRATION_TIME);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        System.out.println(accessToken);
     }
 
-    public void createRefreshToken(String memberId) {
+    public void createRefreshToken(String memberId, HttpServletResponse response) {
         String jti = createUUID();
         String refreshToken =  Jwts.builder()
                 .subject(memberId)
@@ -54,7 +60,8 @@ public class JwtTokenProvider {
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
                 .compact();
 
-        cookieService.createCookie("refresh_token", refreshToken, REFRESH_EXPIRATION_TIME);
+        ResponseCookie cookie = cookieService.createCookie("refresh_token", refreshToken, REFRESH_EXPIRATION_TIME);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         refreshTokenRedisRepository.saveRefreshToken(String.valueOf(memberId), jti, refreshToken);
     }
 

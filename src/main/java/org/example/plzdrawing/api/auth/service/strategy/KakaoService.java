@@ -1,5 +1,6 @@
 package org.example.plzdrawing.api.auth.service.strategy;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class KakaoService implements AuthService {
 
     @Override
-    public Boolean login(LoginRequest request) {
+    public Boolean login(LoginRequest request, HttpServletResponse response) {
         return null;
     }
 
