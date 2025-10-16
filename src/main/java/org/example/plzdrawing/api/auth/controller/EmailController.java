@@ -2,6 +2,7 @@ package org.example.plzdrawing.api.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.dto.request.CodeGenerateForPasswordRequest;
@@ -32,8 +33,9 @@ public class EmailController {
     @GetMapping("/v1/email-verification")
     @Operation(summary = "이메일 인증", description = "verifyEmail")
     public ResponseEntity<Boolean> verifyEmail(@RequestParam("email") @ValidEmail String email,
-            @RequestParam("code") String authCode) {
-        emailService.verifyAuthCode(email, authCode);
+            @RequestParam("code") String authCode,
+            HttpServletResponse response) {
+        emailService.verifyAuthCode(email, authCode, response);
         return ResponseEntity.ok()
                 .body(true);
     }

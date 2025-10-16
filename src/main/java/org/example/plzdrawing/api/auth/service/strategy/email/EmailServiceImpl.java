@@ -5,13 +5,13 @@ import static org.example.plzdrawing.api.auth.exception.AuthErrorCode.EXIST_EMAI
 import static org.example.plzdrawing.domain.Role.ROLE_MEMBER;
 import static org.example.plzdrawing.domain.Role.ROLE_TEMP;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.member.exception.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.dto.request.LoginRequest;
 import org.example.plzdrawing.api.auth.dto.request.SignUpRequest;
-import org.example.plzdrawing.api.auth.dto.response.LoginResponse;
 import org.example.plzdrawing.api.auth.dto.response.SignUpResponse;
 import org.example.plzdrawing.api.auth.repository.AuthCodeRedisRepository;
 import org.example.plzdrawing.api.auth.service.mail.MailService;
@@ -40,14 +40,14 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public Boolean login(LoginRequest request) {
+    public Boolean login(LoginRequest request, HttpServletResponse response){
         Member member = memberRepository.findByEmailAndProvider(request.getEmail(),
                 request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
 
         validatePassword(request.getPassword(), member);
 
-        tokenService.createAccessToken(String.valueOf(member.getId()), ROLE_MEMBER);
-        tokenService.createRefreshToken(String.valueOf(member.getId()));
+        tokenService.createAccessToken(String.valueOf(member.getId()), ROLE_MEMBER, response);
+        tokenService.createRefreshToken(String.valueOf(member.getId()), response);
 
         return true;
     }
@@ -78,7 +78,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public void verifyAuthCode(String email, String code) {
+    public void verifyAuthCode(String email, String code, HttpServletResponse response) {
         String savedCode = authCodeRedisRepository.findEmailAuthNumberByKey(email);
 
         if (!isMatchingCode(code, savedCode)) {
@@ -86,7 +86,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         Member member = memberRepository.save(Member.createTempMember("unknown", email, Provider.EMAIL));
-        tokenService.createAccessToken(member.getId().toString(), ROLE_TEMP);
+        tokenService.createAccessToken(member.getId().toString(), ROLE_TEMP, response);
     }
 
     @Transactional

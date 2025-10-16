@@ -22,7 +22,9 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/api/auth/email/v1/**",
-            "/api/oauth2/code/**"
+            "/oauth2/authorization/**",
+            "/api/oauth2/code/**",
+            "/file/**"
     };
 
     private static final String[] AUTH_TEMP = {

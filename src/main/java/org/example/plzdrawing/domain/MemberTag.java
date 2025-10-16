@@ -40,4 +40,7 @@ public class MemberTag extends BaseTimeEntity{
 
         this.status = Status.ACTIVE;
     }
+
+    public void activate() { this.status = Status.ACTIVE; }
+    public void deactivate() { this.status = Status.INACTIVE; }
 }
