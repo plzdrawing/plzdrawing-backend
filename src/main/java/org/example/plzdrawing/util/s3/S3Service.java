@@ -1,5 +1,7 @@
 package org.example.plzdrawing.util.s3;
 
+import static org.example.plzdrawing.common.error.CommonErrorCode.NOT_SUPPORT_FILE_TYPE;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -9,9 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.plzdrawing.domain.member.Member;
+import org.example.plzdrawing.common.exception.RestApiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,9 @@ public class S3Service {
     private String bucket;
 
     private final AmazonS3 amazonS3;
+
+    private static final Set<String> ALLOWED_TYPES = Set.of("image/jpeg","image/png","image/jpg");
+
 
     public List<String> uploadFile(List<MultipartFile> multipartFiles){
         List<String> fileNameList = new ArrayList<>();
@@ -53,6 +59,13 @@ public class S3Service {
 
         if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
+        }
+
+        String original = multipartFile.getOriginalFilename();
+
+        String ext = original.contains(".") ? original.substring(original.lastIndexOf('.') + 1).toLowerCase() : "";
+        if (!Set.of("jpg","jpeg","png").contains(ext)) {
+            throw new RestApiException(NOT_SUPPORT_FILE_TYPE.getErrorCode());
         }
 
         String fileName = memberId + "/" + createFileName(multipartFile.getOriginalFilename());

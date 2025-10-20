@@ -18,7 +18,10 @@ public enum CommonErrorCode{
     //login
     INVALID_OAUTH2_PROVIDER(new BaseErrorCode("OAUTH_001", HttpStatus.BAD_REQUEST, "지원하지 않는 소셜로그인 provider입니다.")),
     OAUTH2_MISSING_EMAIL(new BaseErrorCode("OAUTH_002", HttpStatus.NOT_FOUND, "해당 소셜 계정에서 이메일 정보를 찾을 수 없습니다.")),
-    OAUTH2_MISSING_NICKNAME(new BaseErrorCode("OAUTH_003", HttpStatus.NOT_FOUND, "해당 소셜 계정에서 이름 정보를 찾을 수 없습니다."))
+    OAUTH2_MISSING_NICKNAME(new BaseErrorCode("OAUTH_003", HttpStatus.NOT_FOUND, "해당 소셜 계정에서 이름 정보를 찾을 수 없습니다.")),
+
+    //s3
+    NOT_SUPPORT_FILE_TYPE(new BaseErrorCode("FILE_001", HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 파일 확장자 입니다."));
     ;
 
     private final ErrorCode errorCode;
