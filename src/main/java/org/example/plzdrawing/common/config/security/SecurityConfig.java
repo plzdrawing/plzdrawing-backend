@@ -24,7 +24,8 @@ public class SecurityConfig {
             "/api/auth/email/v1/**",
             "/oauth2/authorization/**",
             "/api/oauth2/code/**",
-            "/file/**"
+            "/file/**",
+            "/api/auth/v1/login"
     };
 
     private static final String[] AUTH_TEMP = {

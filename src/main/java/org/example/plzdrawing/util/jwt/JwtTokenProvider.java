@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.util.UUID;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.plzdrawing.api.auth.repository.RefreshTokenRedisRepository;
 import org.example.plzdrawing.common.cookie.CookieService;
 import org.example.plzdrawing.common.exception.RestApiException;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
@@ -49,6 +51,7 @@ public class JwtTokenProvider {
         ResponseCookie cookie = cookieService.createCookie("access_token", accessToken, EXPIRATION_TIME);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         System.out.println(accessToken);
+
     }
 
     public void createRefreshToken(String memberId, HttpServletResponse response) {
