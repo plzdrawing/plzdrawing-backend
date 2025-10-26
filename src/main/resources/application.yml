@@ -101,3 +101,4 @@ cloud:
       bucket: ${S3_BUCKET_NAME}
     stack:
       auto: ${S3_STACK_AUTO}
+

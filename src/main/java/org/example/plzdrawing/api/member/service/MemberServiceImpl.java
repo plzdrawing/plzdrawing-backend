@@ -1,8 +1,9 @@
 package org.example.plzdrawing.api.member.service;
 
-import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
-
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.plzdrawing.api.member.dto.request.UpdateProfileRequest;
+import org.example.plzdrawing.api.member.dto.response.ProfileResponse;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.Profile;
 import org.example.plzdrawing.domain.ProfileRepository;
@@ -10,7 +11,8 @@ import org.example.plzdrawing.domain.member.Member;
 import org.example.plzdrawing.domain.member.MemberRepository;
 import org.example.plzdrawing.domain.member.Provider;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +30,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(()->new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
     }
 
-    @Override
+
     public Profile makeProfile(Member member, String fileName, String introduce) {
         Profile profile = profileRepository.findByMemberId(member.getId())
                 .orElseGet(() -> Profile.builder()
@@ -42,5 +44,23 @@ public class MemberServiceImpl implements MemberService {
         profile.updateIntroduce(introduce);
 
         return profileRepository.save(profile);
+    }
+
+    public ProfileResponse updateProfile(Long memberId, UpdateProfileRequest request) {
+        Member member = findById(memberId);
+
+        member.updateProfile(
+                request.getNickname(),
+                request.getIntroduction(),
+                request.getHashtags(),
+                request.getProfileImageUrl()
+        );
+
+        return new ProfileResponse(
+                member.getNickname(),
+                member.getIntroduction(),
+                member.getHashtags(),
+                member.getProfileImageUrl()
+        );
     }
 }
