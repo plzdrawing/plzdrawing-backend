@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.auth.dto.request.CodeGenerateForPasswordRequest;
 import org.example.plzdrawing.api.auth.dto.request.CodeGenerateRequest;
 import org.example.plzdrawing.api.auth.dto.request.PasswordResetRequest;
@@ -13,6 +14,7 @@ import org.example.plzdrawing.api.auth.service.strategy.email.EmailService;
 import org.example.plzdrawing.common.annotation.ValidEmail;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -57,10 +59,13 @@ public class EmailController {
     }
 
     @PatchMapping("/v1/password/update")
-    @Operation(summary = "비밀번호 변경", description = "updatePassword")
-    public ResponseEntity<Void> updatePassword(@RequestBody @Valid UpdatePasswordRequest request) {
-
-        emailService.changePassword(request.getEmail(), request.getNowPassword(), request.getNewPassword());
+    @Operation(summary = "비밀번호 변경 (로그인 사용자 기준)", description = "현재 로그인된 사용자의 비밀번호를 변경합니다.")
+    public ResponseEntity<Void> updatePassword(
+            @AuthenticationPrincipal CustomUser customUser,
+            @RequestBody @Valid UpdatePasswordRequest request
+    ) {
+        String email = customUser.getMember().getEmail();
+        emailService.changePassword(email, request.getNowPassword(), request.getNewPassword());
         return ResponseEntity.ok().build();
     }
 }
