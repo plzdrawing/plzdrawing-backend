@@ -1,5 +1,6 @@
 package org.example.plzdrawing.util.s3;
 
+import static org.example.plzdrawing.common.error.CommonErrorCode.FILE_UPLOAD_LIMIT;
 import static org.example.plzdrawing.common.error.CommonErrorCode.NOT_SUPPORT_FILE_TYPE;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -32,12 +33,20 @@ public class S3Service {
     private static final Set<String> ALLOWED_TYPES = Set.of("image/jpeg","image/png","image/jpg");
 
 
-    public List<String> uploadFile(List<MultipartFile> multipartFiles){
+    public List<String> uploadFile(Long memberId, List<MultipartFile> multipartFiles, int maximum){
+        if(multipartFiles.size() > maximum) {
+            throw new RestApiException(FILE_UPLOAD_LIMIT.getErrorCode());
+        }
         List<String> fileNameList = new ArrayList<>();
 
         // forEach 구문을 통해 multipartFiles 리스트로 넘어온 파일들을 순차적으로 fileNameList 에 추가
         multipartFiles.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename());
+            String original = file.getOriginalFilename();
+            String ext = original.contains(".") ? original.substring(original.lastIndexOf('.') + 1).toLowerCase() : "";
+            if (!Set.of("jpg","jpeg","png").contains(ext)) {
+                throw new RestApiException(NOT_SUPPORT_FILE_TYPE.getErrorCode());
+            }
+            String fileName = memberId + "/" + createFileName(original);
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
