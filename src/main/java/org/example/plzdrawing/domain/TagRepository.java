@@ -13,4 +13,12 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     @Query("select t from Tag t where lower(t.content) = lower(:content) and t.status = 'ACTIVE'")
     Optional<Tag> findActiveByContentIgnoreCase(@Param("content") String content);
+
+    @Query("""
+SELECT t FROM Tag t
+WHERE LOWER(t.content) IN :norms
+AND t.status = :status
+""")
+    List<Tag> findActiveByContentInIgnoreCase(@Param("norms") Collection<String> norms,
+            @Param("status") Status status);
 }
