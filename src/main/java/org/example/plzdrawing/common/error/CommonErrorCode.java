@@ -21,7 +21,8 @@ public enum CommonErrorCode{
     OAUTH2_MISSING_NICKNAME(new BaseErrorCode("OAUTH_003", HttpStatus.NOT_FOUND, "해당 소셜 계정에서 이름 정보를 찾을 수 없습니다.")),
 
     //s3
-    NOT_SUPPORT_FILE_TYPE(new BaseErrorCode("FILE_001", HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 파일 확장자 입니다."));
+    NOT_SUPPORT_FILE_TYPE(new BaseErrorCode("FILE_001", HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 파일 확장자 입니다.")),
+    FILE_UPLOAD_LIMIT(new BaseErrorCode("FILE_002", HttpStatus.FORBIDDEN, "허용하는 파일의 개수를 초과하였습니다."));
     ;
 
     private final ErrorCode errorCode;
