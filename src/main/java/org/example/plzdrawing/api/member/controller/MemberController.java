@@ -3,6 +3,7 @@ package org.example.plzdrawing.api.member.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
+import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.api.member.facade.MemberFacade;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,16 @@ public class MemberController {
     ) {
         Long memberId = customUser.getMember().getId();
         ProfileResponse response = memberService.updateProfile(memberId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/v1/me")
+    @Operation(summary = "마이페이지 사용자 정보 조회", description = "JWT 토큰 기반으로 현재 로그인된 사용자의 정보를 조회합니다.")
+    public ResponseEntity<ProfileInfoResponse> getMyProfile(
+            @AuthenticationPrincipal CustomUser customUser
+    ) {
+        Long memberId = customUser.getMember().getId();
+        ProfileInfoResponse response = memberService.getMyProfile(memberId);
         return ResponseEntity.ok(response);
     }
 }

@@ -3,6 +3,7 @@ package org.example.plzdrawing.api.member.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.member.dto.request.UpdateProfileRequest;
+import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.api.member.dto.response.ProfileResponse;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.Profile;
@@ -11,6 +12,9 @@ import org.example.plzdrawing.domain.member.Member;
 import org.example.plzdrawing.domain.member.MemberRepository;
 import org.example.plzdrawing.domain.member.Provider;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
 
@@ -60,6 +64,22 @@ public class MemberServiceImpl implements MemberService {
                 member.getNickname(),
                 member.getIntroduction(),
                 member.getHashtags(),
+                member.getProfileImageUrl()
+        );
+    }
+
+    @Override
+    public ProfileInfoResponse getMyProfile(Long memberId) {
+        Member member = findById(memberId);
+
+        List<String> hashtagList = member.getHashtags() != null
+                ? Arrays.asList(member.getHashtags().replace("#", "").split(" "))
+                : List.of();
+
+        return new ProfileInfoResponse(
+                member.getNickname(),
+                member.getIntroduction(),
+                hashtagList,
                 member.getProfileImageUrl()
         );
     }

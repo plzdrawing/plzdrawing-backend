@@ -1,5 +1,6 @@
 package org.example.plzdrawing.api.member.service;
 
+import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.domain.Profile;
 import org.example.plzdrawing.api.member.dto.request.UpdateProfileRequest;
 import org.example.plzdrawing.api.member.dto.response.ProfileResponse;
@@ -14,5 +15,7 @@ public interface MemberService {
 
     Profile makeProfile(Member member, String fileName, String introduce);
     ProfileResponse updateProfile(Long memberId, UpdateProfileRequest request);
+    ProfileInfoResponse getMyProfile(Long memberId);
+
 
 }
