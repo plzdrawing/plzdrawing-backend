@@ -146,4 +146,15 @@ public class EmailServiceImpl implements EmailService {
     private boolean isPasswordMatching(String inputPassword, String savedPassword) {
         return passwordEncoder.matches(inputPassword, savedPassword);
     }
+
+    @Transactional
+    @Override
+    public void cancelTempEmail(String email) {
+        memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
+                .ifPresent(member -> {
+                    if (member.getRole() == ROLE_TEMP) {
+                        memberRepository.delete(member);
+                    }
+                });
+    }
 }

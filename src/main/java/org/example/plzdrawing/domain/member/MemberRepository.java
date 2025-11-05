@@ -1,6 +1,7 @@
 package org.example.plzdrawing.domain.member;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.example.plzdrawing.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +33,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     );
 
     Optional<Member> findByEmail(String email);
+
+    List<Member> findAllByRoleAndCreatedAtBefore(Role role, LocalDateTime cutoff);
 }
