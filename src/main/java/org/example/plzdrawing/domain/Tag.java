@@ -1,10 +1,13 @@
 package org.example.plzdrawing.domain;
 
 import jakarta.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.content.ContentTag;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
@@ -30,6 +33,9 @@ public class Tag extends BaseTimeEntity{
 
     @OneToMany(mappedBy = "tag")
     private List<MemberTag> memberTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ContentTag> contentTags = new LinkedHashSet<>();
 
     public void addMemberTag(MemberTag memberTag){
         this.memberTags.add(memberTag);

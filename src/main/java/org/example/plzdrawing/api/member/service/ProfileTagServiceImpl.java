@@ -1,10 +1,8 @@
 package org.example.plzdrawing.api.member.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,6 +14,7 @@ import org.example.plzdrawing.domain.Tag;
 import org.example.plzdrawing.domain.TagRepository;
 import org.example.plzdrawing.domain.member.Member;
 import org.example.plzdrawing.domain.member.MemberRepository;
+import org.example.plzdrawing.util.tag.TagUtil;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,7 @@ public class ProfileTagServiceImpl implements ProfileTagService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         // 1) 입력 정규화 (trim, 빈 값 제거, 중복 제거, 소문자 키)
-        Map<String, String> normalizedToOriginal = normalize(hashTags);
+        Map<String, String> normalizedToOriginal = TagUtil.normalize(hashTags);
         Set<String> normalized = normalizedToOriginal.keySet(); // lower-case set
 
         // 2) 이미 존재하는 활성 Tag 조회
@@ -49,7 +48,8 @@ public class ProfileTagServiceImpl implements ProfileTagService {
                         null,
                         normalizedToOriginal.get(n), // 원본 표기 유지
                         Status.ACTIVE,
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                        new LinkedHashSet<>()
                 ))
                 .collect(Collectors.toList());
 
@@ -88,18 +88,5 @@ public class ProfileTagServiceImpl implements ProfileTagService {
         for (MemberTag leftover : currentByTagId.values()) {
             leftover.deactivate();
         }
-    }
-
-    private Map<String, String> normalize(List<String> raw) {
-        if (raw == null) return Collections.emptyMap();
-        Map<String, String> map = new LinkedHashMap<>();
-        for (String s : raw) {
-            if (s == null) continue;
-            String trimmed = s.trim();
-            if (trimmed.isEmpty()) continue;
-            String key = trimmed.toLowerCase(Locale.ROOT);
-            map.putIfAbsent(key, trimmed); // 첫 표기 유지
-        }
-        return map;
     }
 }
