@@ -40,9 +40,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional
     @Override
-    public Boolean login(LoginRequest request, HttpServletResponse response){
+    public Boolean login(LoginRequest request, HttpServletResponse response) {
         Member member = memberRepository.findByEmailAndProvider(request.getEmail(),
-                request.getProvider()).orElseThrow(()->new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
+                request.getProvider()).orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
 
         validatePassword(request.getPassword(), member);
 
@@ -70,7 +70,7 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     @Override
     public void sendCode(String email) {
-        if(memberRepository.findByRoleAndProviderAndEmail(ROLE_MEMBER, Provider.EMAIL, email).isPresent()) {
+        if (memberRepository.findByRoleAndProviderAndEmail(ROLE_MEMBER, Provider.EMAIL, email).isPresent()) {
             throw new RestApiException(EXIST_EMAIL.getErrorCode());
         }
         mailService.sendCodeEmail(email);
@@ -106,6 +106,16 @@ public class EmailServiceImpl implements EmailService {
         return true;
     }
 
+
+    private void savePassword(String email, String password) {
+        password = passwordEncoder.encode(password);
+
+        Member member = memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
+                .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
+
+        member.updatePassword(password);
+    }
+
     @Transactional
     @Override
     public void changePassword(String email, String password, String newPassword) {
@@ -116,14 +126,6 @@ public class EmailServiceImpl implements EmailService {
         savePassword(email, newPassword);
     }
 
-    private void savePassword(String email, String password) {
-        password = passwordEncoder.encode(password);
-
-        Member member = memberRepository.findByEmailAndProvider(email, Provider.EMAIL)
-                .orElseThrow(() -> new RestApiException(MemberErrorCode.MEMBER_NOT_FOUND.getErrorCode()));
-
-        member.updatePassword(password);
-    }
 
     private boolean verifyReissueAuthCode(String email, String reissueAuthCode) {
         String savedCode = authCodeRedisRepository.findReissueAuthNumberByKey(email);
