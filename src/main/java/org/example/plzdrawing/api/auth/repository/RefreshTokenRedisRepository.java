@@ -1,6 +1,8 @@
 package org.example.plzdrawing.api.auth.repository;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,4 +33,12 @@ public class RefreshTokenRedisRepository {
     private String createRedisId(String memberId, String jti) {
         return memberId + ":" + jti;
     }
+
+    public void deleteRefreshToken(String memberId) {
+        Set<String> keys = redisTemplate.keys(memberId + ":*");
+        if (!keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
+
 }
