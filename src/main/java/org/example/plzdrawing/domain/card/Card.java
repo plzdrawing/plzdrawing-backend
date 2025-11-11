@@ -2,6 +2,8 @@ package org.example.plzdrawing.domain.card;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.card.enums.TimeTaken;
 import org.example.plzdrawing.domain.member.Member;
 
 @Entity
@@ -36,8 +39,9 @@ public class Card {
     @Column(name = "price")
     private Long price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "time_taken")
-    private String timeTaken;
+    private TimeTaken timeTaken;
 
     @Column(name = "url")
     private String url;
