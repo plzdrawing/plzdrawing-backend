@@ -1,22 +1,21 @@
-package org.example.plzdrawing.domain.content;
+package org.example.plzdrawing.domain.card;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.card.enums.TimeTaken;
 import org.example.plzdrawing.domain.member.Member;
 
 @Entity
@@ -24,26 +23,29 @@ import org.example.plzdrawing.domain.member.Member;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Content {
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "content_id", nullable = false)
+    @Column(name = "card_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "explanation")
-    private String explanation;
+    @Column(name = "title")
+    private String title;
 
-    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ContentTag> contentTags = new LinkedHashSet<>(); // 즉시 초기화
+    @Column(name = "price")
+    private Long price;
 
-    public void addContentTag(ContentTag ct) {
-        if (ct == null) return;
-        if (contentTags == null) contentTags = new LinkedHashSet<>();
-        contentTags.add(ct);
-        ct.setContent(this);
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "time_taken")
+    private TimeTaken timeTaken;
+
+    @Column(name = "url")
+    private String url;
+
+    @Column(name = "is_modify")
+    private Boolean isModify;
 }
