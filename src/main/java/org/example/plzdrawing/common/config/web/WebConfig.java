@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration c = new CorsConfiguration();
         // ★ Swagger UI / 프런트의 실제 오리진을 명시 (와일드카드 금지: credentials=true와 함께 쓸 수 없음)
-        c.setAllowedOrigins(List.of("http://localhost:8080"));
+        c.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081"));
         c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
         c.setAllowedHeaders(List.of("*"));
         c.setExposedHeaders(List.of("Set-Cookie","Location"));
