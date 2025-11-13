@@ -22,7 +22,10 @@ public enum CommonErrorCode{
 
     //s3
     NOT_SUPPORT_FILE_TYPE(new BaseErrorCode("FILE_001", HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 파일 확장자 입니다.")),
-    FILE_UPLOAD_LIMIT(new BaseErrorCode("FILE_002", HttpStatus.FORBIDDEN, "허용하는 파일의 개수를 초과하였습니다."));
+    FILE_UPLOAD_LIMIT(new BaseErrorCode("FILE_002", HttpStatus.FORBIDDEN, "허용하는 파일의 개수를 초과하였습니다.")),
+
+    //fcm
+    FCM_ERROR(new BaseErrorCode("ALARM_001", HttpStatus.BAD_REQUEST, "알림 전송 중 오류가 발생하였습니다."));
     ;
 
     private final ErrorCode errorCode;
