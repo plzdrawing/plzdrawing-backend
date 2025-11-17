@@ -57,6 +57,12 @@ dependencies {
 
     //s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // Google Auth Library (GoogleCredentials)
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.35.0'
+
+    // OkHttp (HTTP 통신용)
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 
 test {

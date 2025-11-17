@@ -102,3 +102,8 @@ cloud:
     stack:
       auto: ${S3_STACK_AUTO}
 
+fcm:
+  api-url: ${FCM_API_URL}
+  firebase-config-path: ${FCM_CONFIG_PATH}
+  google:
+    scope: ${FCM_SCOPE}
