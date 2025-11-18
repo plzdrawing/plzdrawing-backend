@@ -1,16 +1,20 @@
 package org.example.plzdrawing.api.member.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.member.dto.request.UpdateProfileRequest;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.api.member.dto.response.ProfileResponse;
+import org.example.plzdrawing.common.cookie.CookieService;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.Profile;
 import org.example.plzdrawing.domain.ProfileRepository;
 import org.example.plzdrawing.domain.member.Member;
 import org.example.plzdrawing.domain.member.MemberRepository;
 import org.example.plzdrawing.domain.member.Provider;
+import org.example.plzdrawing.util.jwt.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -25,6 +29,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final CookieService cookieService;
 
     @Override
     public boolean isMemberExistsByEmailAndProvider(String email, Provider provider) {
@@ -82,5 +88,20 @@ public class MemberServiceImpl implements MemberService {
                 hashtagList,
                 member.getProfileImageUrl()
         );
+    }
+
+    @Override
+    public void withdraw(Long memberId, HttpServletRequest request, HttpServletResponse response) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
+
+        jwtTokenProvider.deleteRefreshToken(String.valueOf(memberId));
+
+        cookieService.expireCookie("access_token", response);
+        cookieService.expireCookie("refresh_token", response);
+
+        memberRepository.delete(member);
+
+        profileRepository.findByMemberId(memberId).ifPresent(profileRepository::delete);
     }
 }

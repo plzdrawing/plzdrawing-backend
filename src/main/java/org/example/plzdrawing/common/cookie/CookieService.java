@@ -1,6 +1,8 @@
 package org.example.plzdrawing.common.cookie;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,14 @@ public class CookieService {
                 .domain(cookieDomain)
                 .maxAge(maxAge) // 5일(초 단위)
                 .build();
+    }
+
+    public void expireCookie(String cookieName, HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

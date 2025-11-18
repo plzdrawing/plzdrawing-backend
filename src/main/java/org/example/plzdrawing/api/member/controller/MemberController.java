@@ -1,6 +1,9 @@
 package org.example.plzdrawing.api.member.controller;
 
 import java.util.List;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
@@ -27,18 +30,18 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberFacade memberFacade;
+    private final MemberService memberService;
+
 
     @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Boolean> uploadFile(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestPart("multipartFile") MultipartFile multipartFile,
             @RequestPart("introduce") String introduce,
-            @RequestPart("hashTag") List<String> hashTag){
+            @RequestPart("hashTag") List<String> hashTag) {
         return ResponseEntity.ok((memberFacade.uploadProfile(customUser, multipartFile, introduce, hashTag)));
     }
-
-    private final MemberService memberService;
-
+    
     @PatchMapping("/v1/profile")
     @Operation(summary = "프로필 수정", description = "닉네임, 한 줄 소개, 해시태그, 프로필 이미지 수정")
     public ResponseEntity<ProfileResponse> updateProfile(
@@ -58,5 +61,16 @@ public class MemberController {
         Long memberId = customUser.getMember().getId();
         ProfileInfoResponse response = memberService.getMyProfile(memberId);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/v1/withdraw")
+    @Operation(summary = "회원 탈퇴", description = "현재 로그인된 회원을 탈퇴시킵니다.")
+    public ResponseEntity<Void> withdraw(
+            @AuthenticationPrincipal CustomUser customUser,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        memberService.withdraw(customUser.getMember().getId(), request, response);
+        return ResponseEntity.noContent().build();
     }
 }
