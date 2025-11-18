@@ -102,9 +102,8 @@ public class JwtTokenProvider {
         }
     }
 
-    //TODO 회원탈퇴
-    public void deleteRefreshToken(String redisId) {
-
+    public void deleteRefreshToken(String memberId) {
+        refreshTokenRedisRepository.deleteRefreshToken(memberId);
     }
 
     public String getMemberId(String token) {

@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.Role;
 import org.example.plzdrawing.domain.member.MemberRepository;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +19,8 @@ public class TokenService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final RedisTemplate<String, String> redisTemplate;
+
     public void createAccessToken(String memberId, Role role, HttpServletResponse response) {
         String strRole = role.name();
         jwtTokenProvider.createAccessToken(memberId, strRole, response);
@@ -44,5 +49,32 @@ public class TokenService {
         }
 
         return tokenHeader.substring(7);
+    }
+
+    public void logout(String tokenHeader, HttpServletResponse response) {
+        String accessToken = removePrefix(tokenHeader);
+
+        if (!jwtTokenProvider.validationToken(accessToken)) {
+            throw new RestApiException(INVALID_TOKEN.getErrorCode());
+        }
+
+        String memberId = jwtTokenProvider.getMemberId(accessToken);
+
+        jwtTokenProvider.deleteRefreshToken(memberId);
+
+        ResponseCookie accessCookie = ResponseCookie.from("access_token", "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
     }
 }

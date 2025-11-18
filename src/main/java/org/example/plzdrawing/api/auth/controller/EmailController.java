@@ -42,6 +42,15 @@ public class EmailController {
                 .body(true);
     }
 
+    @DeleteMapping("/v1/email-verification/cancel")
+    @Operation(summary = "이메일 인증 취소", description = "회원가입 도중 취소 시 임시 이메일 계정을 DB에서 제거합니다.")
+    public ResponseEntity<Void> cancelEmailVerification(
+            @RequestParam("email") @ValidEmail String email
+    ) {
+        emailService.cancelTempEmail(email);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/v1/password/reissue")
     @Operation(summary = "비밀번호 재발급 인증번호 전송", description = "verifyEmail")
     public ResponseEntity<Void> sendEmailForReissuePassword(

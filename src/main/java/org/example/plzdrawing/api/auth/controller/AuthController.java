@@ -66,4 +66,14 @@ public class AuthController {
         tokenService.reissue(tokenHeader, response);
         return ResponseEntity.ok(true);
     }
+
+    @PostMapping("/v1/logout")
+    @Operation(summary = "로그아웃", description = "JWT 토큰을 무효화하고 세션을 종료합니다.")
+    public ResponseEntity<Void> logout(
+            @RequestHeader("Authorization") String tokenHeader,
+            HttpServletResponse response
+    ) {
+        tokenService.logout(tokenHeader, response);
+        return ResponseEntity.ok().build();
+    }
 }
