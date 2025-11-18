@@ -60,10 +60,8 @@ public class TokenService {
 
         String memberId = jwtTokenProvider.getMemberId(accessToken);
 
-        // Redis에서 RefreshToken 완전 삭제
         jwtTokenProvider.deleteRefreshToken(memberId);
 
-        // 쿠키 초기화
         ResponseCookie accessCookie = ResponseCookie.from("access_token", "")
                 .path("/")
                 .maxAge(0)
