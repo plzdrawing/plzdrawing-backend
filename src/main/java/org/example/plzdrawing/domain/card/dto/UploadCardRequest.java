@@ -1,7 +1,7 @@
 package org.example.plzdrawing.domain.card.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.example.plzdrawing.domain.card.enums.TimeTaken;
+import org.example.plzdrawing.domain.content.enums.TimeTaken;
 
 public record UploadCardRequest(
         @Schema(description = "제목", example = "카드 제목")
