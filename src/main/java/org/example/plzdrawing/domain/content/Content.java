@@ -3,6 +3,8 @@ package org.example.plzdrawing.domain.content;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.content.enums.TimeTaken;
 import org.example.plzdrawing.domain.member.Member;
 
 @Entity
@@ -36,6 +39,13 @@ public class Content {
 
     @Column(name = "explanation")
     private String explanation;
+
+    @Column(name = "price")
+    private Long price;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "time_taken")
+    private TimeTaken timeTaken;
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ContentTag> contentTags = new LinkedHashSet<>(); // 즉시 초기화

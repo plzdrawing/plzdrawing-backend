@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.plzdrawing.domain.card.enums.TimeTaken;
+import org.example.plzdrawing.domain.content.enums.TimeTaken;
 import org.example.plzdrawing.domain.member.Member;
 
 @Entity
