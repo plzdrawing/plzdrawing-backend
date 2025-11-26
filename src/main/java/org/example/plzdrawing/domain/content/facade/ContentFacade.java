@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.domain.content.Content;
+import org.example.plzdrawing.domain.content.dto.UploadContentRequest;
 import org.example.plzdrawing.domain.content.dto.UploadContentResponse;
 import org.example.plzdrawing.domain.content.service.ContentImageService;
 import org.example.plzdrawing.domain.content.service.ContentService;
@@ -21,12 +22,12 @@ public class ContentFacade {
     private final ContentImageService contentImageService;
     private final ContentTagService contentTagService;
 
-    public UploadContentResponse uploadContents(CustomUser customUser, List<MultipartFile> multipartFile, String explain, List<String> hashTag) {
+    public UploadContentResponse uploadContents(CustomUser customUser, List<MultipartFile> multipartFile, UploadContentRequest uploadContentRequest) {
         Member member = customUser.getMember();
         List<String> fileNames = s3Service.uploadFile(member.getId(), multipartFile, 5);
-        Content content = contentService.upload(member, explain);
+        Content content = contentService.upload(member, uploadContentRequest);
         contentImageService.uploadImages(content, fileNames);
-        contentTagService.syncContentTags(content.getId(), hashTag);
+        contentTagService.syncContentTags(content.getId(), uploadContentRequest.hashTag());
         return UploadContentResponse.of(content.getId());
     }
 }

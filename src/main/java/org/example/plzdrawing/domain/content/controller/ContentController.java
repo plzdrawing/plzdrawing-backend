@@ -32,6 +32,6 @@ public class ContentController {
             @RequestPart("multipartFile") List<MultipartFile> multipartFile,
             @RequestPart("content") UploadContentRequest uploadContentRequest
     ) {
-        return ResponseEntity.ok(contentFacade.uploadContents(customUser, multipartFile, uploadContentRequest.explain(), uploadContentRequest.hashTag()));
+        return ResponseEntity.ok(contentFacade.uploadContents(customUser, multipartFile, uploadContentRequest));
     }
 }
