@@ -110,4 +110,8 @@ public class S3Service {
     public void deleteFile(String fileName){
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
+
+    public void deleteFiles(List<String> multipartFiles) {
+        multipartFiles.forEach(file -> amazonS3.deleteObject(new DeleteObjectRequest(bucket, file)));
+    }
 }
