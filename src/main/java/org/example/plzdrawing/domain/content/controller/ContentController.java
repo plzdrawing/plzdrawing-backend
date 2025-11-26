@@ -5,12 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
-import org.example.plzdrawing.domain.content.dto.UploadContentRequest;
-import org.example.plzdrawing.domain.content.dto.UploadContentResponse;
+import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
+import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
+import org.example.plzdrawing.domain.content.dto.response.UploadContentResponse;
 import org.example.plzdrawing.domain.content.facade.ContentFacade;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -33,5 +35,15 @@ public class ContentController {
             @RequestPart("content") UploadContentRequest uploadContentRequest
     ) {
         return ResponseEntity.ok(contentFacade.uploadContents(customUser, multipartFile, uploadContentRequest));
+    }
+
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "게시글 수정", description = "updateContents")
+    public ResponseEntity<Boolean> updateContents(
+            @AuthenticationPrincipal CustomUser customUser,
+            @RequestPart("multipartFile") List<MultipartFile> multipartFile,
+            @RequestPart("content") UpdateContentRequest updateContentRequest
+    ) {
+        return ResponseEntity.ok(contentFacade.updateContents(customUser, multipartFile, updateContentRequest));
     }
 }

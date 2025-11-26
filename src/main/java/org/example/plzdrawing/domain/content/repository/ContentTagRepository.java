@@ -25,4 +25,6 @@ AND ct.tag.id IN :tagIds
 """)
     List<ContentTag> findByContentIdAndTagIdIn(@Param("contentId") Long contentId,
             @Param("tagIds") Collection<Long> tagIds);
+
+    void deleteAllByContent(Content content);
 }

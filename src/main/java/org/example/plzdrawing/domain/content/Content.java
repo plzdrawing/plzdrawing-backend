@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.enums.TimeTaken;
 import org.example.plzdrawing.domain.member.Member;
 
@@ -55,5 +56,11 @@ public class Content {
         if (contentTags == null) contentTags = new LinkedHashSet<>();
         contentTags.add(ct);
         ct.setContent(this);
+    }
+
+    public void update(UpdateContentRequest updateContentRequest) {
+        this.explanation = updateContentRequest.explain();
+        this.price = updateContentRequest.price();
+        this.timeTaken = updateContentRequest.timeTaken();
     }
 }
