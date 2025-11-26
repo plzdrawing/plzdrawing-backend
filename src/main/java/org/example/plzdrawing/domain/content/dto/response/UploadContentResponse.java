@@ -1,4 +1,4 @@
-package org.example.plzdrawing.domain.content.dto;
+package org.example.plzdrawing.domain.content.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

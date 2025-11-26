@@ -1,4 +1,4 @@
-package org.example.plzdrawing.domain.content.dto;
+package org.example.plzdrawing.domain.content.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
