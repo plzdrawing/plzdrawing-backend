@@ -25,7 +25,10 @@ public enum CommonErrorCode{
     FILE_UPLOAD_LIMIT(new BaseErrorCode("FILE_002", HttpStatus.FORBIDDEN, "허용하는 파일의 개수를 초과하였습니다.")),
 
     //fcm
-    FCM_ERROR(new BaseErrorCode("ALARM_001", HttpStatus.BAD_REQUEST, "알림 전송 중 오류가 발생하였습니다."));
+    FCM_ERROR(new BaseErrorCode("ALARM_001", HttpStatus.BAD_REQUEST, "알림 전송 중 오류가 발생하였습니다.")),
+
+    //게시글
+    CONTENT_NOT_FOUND(new BaseErrorCode("CONTENT_404", HttpStatus.NOT_FOUND, "해당하는 게시글을 찾을 수 없습니다."))
     ;
 
     private final ErrorCode errorCode;

@@ -1,8 +1,10 @@
 package org.example.plzdrawing.domain.content.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.domain.content.Content;
-import org.example.plzdrawing.domain.content.dto.UploadContentRequest;
+import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
+import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
 import org.example.plzdrawing.domain.content.repository.ContentRepository;
 import org.example.plzdrawing.domain.member.Member;
 import org.springframework.stereotype.Service;
@@ -23,5 +25,15 @@ public class ContentService {
                         .timeTaken(uploadContentRequest.timeTaken())
                         .build()
         );
+    }
+
+    @Transactional
+    public void update(Content content, UpdateContentRequest updateContentRequest) {
+        content.update(updateContentRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Content> findByMemberAndId(Member member, Long contentId) {
+        return contentRepository.findByMemberAndId(member, contentId);
     }
 }

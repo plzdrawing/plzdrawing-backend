@@ -148,4 +148,9 @@ public class ContentTagService {
         // 비활성화
         toDeactivate.forEach(ContentTag::deactivate);
     }
+
+    @Transactional
+    public void deleteAllByContent(Content content) {
+        contentTagRepository.deleteAllByContent(content);
+    }
 }
