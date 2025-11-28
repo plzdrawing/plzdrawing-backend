@@ -114,4 +114,8 @@ public class S3Service {
     public void deleteFiles(List<String> multipartFiles) {
         multipartFiles.forEach(file -> amazonS3.deleteObject(new DeleteObjectRequest(bucket, file)));
     }
+
+    public String getFileUrl(String fileName) {
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
 }
