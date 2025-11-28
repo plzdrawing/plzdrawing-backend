@@ -1,7 +1,6 @@
 package org.example.plzdrawing.domain.member;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import org.example.plzdrawing.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,5 +33,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByEmail(String email);
 
-    List<Member> findAllByRoleAndCreatedAtBefore(Role role, LocalDateTime cutoff);
+    @Query("""
+        select distinct m
+        from Member m
+        left join fetch m.profile p
+        left join fetch m.memberTags mt
+        left join fetch mt.tag t
+        where m.id = :memberId
+    """)
+    Optional<Member> findWithProfileAndTags(@Param("memberId") Long memberId);
 }

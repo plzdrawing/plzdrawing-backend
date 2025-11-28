@@ -12,6 +12,7 @@ import lombok.*;
 import org.example.plzdrawing.api.auth.dto.request.SignUpRequest;
 import org.example.plzdrawing.domain.BaseTimeEntity;
 import org.example.plzdrawing.domain.MemberTag;
+import org.example.plzdrawing.domain.Profile;
 import org.example.plzdrawing.domain.Role;
 import org.example.plzdrawing.domain.Status;
 import org.hibernate.annotations.Where;
@@ -55,6 +56,9 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Profile profile;
 
     @OneToMany(mappedBy = "member")
     private Set<MemberTag> memberTags = new HashSet<>();

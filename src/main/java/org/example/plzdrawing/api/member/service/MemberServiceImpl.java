@@ -3,21 +3,25 @@ package org.example.plzdrawing.api.member.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.member.dto.request.UpdateProfileRequest;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.api.member.dto.response.ProfileResponse;
 import org.example.plzdrawing.common.cookie.CookieService;
 import org.example.plzdrawing.common.exception.RestApiException;
+import org.example.plzdrawing.domain.MemberTag;
 import org.example.plzdrawing.domain.Profile;
 import org.example.plzdrawing.domain.ProfileRepository;
+import org.example.plzdrawing.domain.Tag;
 import org.example.plzdrawing.domain.member.Member;
 import org.example.plzdrawing.domain.member.MemberRepository;
 import org.example.plzdrawing.domain.member.Provider;
+import org.example.plzdrawing.domain.Status;
 import org.example.plzdrawing.util.jwt.JwtTokenProvider;
+import org.example.plzdrawing.util.s3.S3Service;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -31,6 +35,7 @@ public class MemberServiceImpl implements MemberService {
     private final ProfileRepository profileRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieService cookieService;
+    private final S3Service s3Service;
 
     @Override
     public boolean isMemberExistsByEmailAndProvider(String email, Provider provider) {
@@ -76,17 +81,38 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ProfileInfoResponse getMyProfile(Long memberId) {
-        Member member = findById(memberId);
+        Member member = memberRepository.findWithProfileAndTags(memberId)
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
 
-        List<String> hashtagList = member.getHashtags() != null
-                ? Arrays.asList(member.getHashtags().replace("#", "").split(" "))
-                : List.of();
+        Profile profile = member.getProfile();
+
+        String introduce = null;
+        String profileUrl = null;
+
+        if (profile != null) {
+            introduce = profile.getIntroduce();
+            profileUrl = s3Service.getFileUrl(profile.getProfileUrl());
+        }
+
+        List<String> tags = new ArrayList<>(member.getMemberTags().stream()
+                .filter(mt -> mt.getStatus() == Status.ACTIVE)
+                .map(mt -> mt.getTag().getContent())
+                .toList());
+
+        if (member.getMemberTags() != null) {
+            for (MemberTag mt : member.getMemberTags()) {
+                Tag tag = mt.getTag();
+                if (tag != null) {
+                    tags.add(tag.getContent());
+                }
+            }
+        }
 
         return new ProfileInfoResponse(
                 member.getNickname(),
-                member.getIntroduction(),
-                hashtagList,
-                member.getProfileImageUrl()
+                introduce,
+                tags,
+                profileUrl
         );
     }
 
