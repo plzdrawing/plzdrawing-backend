@@ -38,6 +38,9 @@ public class Content {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "explanation")
     private String explanation;
 
@@ -59,6 +62,7 @@ public class Content {
     }
 
     public void update(UpdateContentRequest updateContentRequest) {
+        this.title =
         this.explanation = updateContentRequest.explain();
         this.price = updateContentRequest.price();
         this.timeTaken = updateContentRequest.timeTaken();
