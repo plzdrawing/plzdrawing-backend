@@ -20,6 +20,7 @@ public class ContentService {
         return contentRepository.save(
                 Content.builder()
                         .member(member)
+                        .title(uploadContentRequest.title())
                         .explanation(uploadContentRequest.explain())
                         .price(uploadContentRequest.price())
                         .timeTaken(uploadContentRequest.timeTaken())

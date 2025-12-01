@@ -7,9 +7,11 @@ import org.example.plzdrawing.domain.content.enums.TimeTaken;
 public record UpdateContentRequest(
         @Schema(description = "수정할 게시글 Id", example = "1")
         Long contentId,
+        @Schema(description = "수정할 게시글 제목", example = "그림 제목")
+        String title,
         @Schema(description = "설명", example = "게시글 설명")
         String explain,
-        @Schema(description = "해시태그", example = "해시태그")
+        @Schema(description = "해시태그", example = "[해시태그1, 해시태그2]")
         List<String> hashTag,
         @Schema(description = "예상금액", example = "2000")
         Long price,
