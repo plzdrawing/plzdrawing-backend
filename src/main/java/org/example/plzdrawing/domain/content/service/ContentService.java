@@ -2,11 +2,15 @@ package org.example.plzdrawing.domain.content.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
+import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.Content;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
 import org.example.plzdrawing.domain.content.repository.ContentRepository;
 import org.example.plzdrawing.domain.member.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +40,16 @@ public class ContentService {
     @Transactional(readOnly = true)
     public Optional<Content> findByMemberAndId(Member member, Long contentId) {
         return contentRepository.findByMemberAndId(member, contentId);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ContentThumbnailResponse> getMemberContentThumbnails(
+            Long memberId,
+            Pageable pageable
+    ) {
+        Page<ContentThumbnailResponse> page =
+                contentRepository.findThumbnailsByMemberId(memberId, pageable);
+
+        return PageResponse.from(page);
     }
 }
