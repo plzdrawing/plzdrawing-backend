@@ -2,6 +2,7 @@ package org.example.plzdrawing.domain.content.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
@@ -32,7 +33,7 @@ public class ContentController {
     public ResponseEntity<UploadContentResponse> uploadContents(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestPart("multipartFile") List<MultipartFile> multipartFile,
-            @RequestPart("content") UploadContentRequest uploadContentRequest
+            @RequestPart("content") @Valid UploadContentRequest uploadContentRequest
     ) {
         return ResponseEntity.ok(contentFacade.uploadContents(customUser, multipartFile, uploadContentRequest));
     }
@@ -42,7 +43,7 @@ public class ContentController {
     public ResponseEntity<Boolean> updateContents(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestPart("multipartFile") List<MultipartFile> multipartFile,
-            @RequestPart("content") UpdateContentRequest updateContentRequest
+            @RequestPart("content") @Valid UpdateContentRequest updateContentRequest
     ) {
         return ResponseEntity.ok(contentFacade.updateContents(customUser, multipartFile, updateContentRequest));
     }

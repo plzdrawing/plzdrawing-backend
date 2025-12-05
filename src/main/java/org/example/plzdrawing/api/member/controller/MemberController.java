@@ -1,11 +1,12 @@
 package org.example.plzdrawing.api.member.controller;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
+import org.example.plzdrawing.api.member.dto.request.UpsertProfileRequest;
 import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.api.member.facade.MemberFacade;
@@ -36,12 +37,12 @@ public class MemberController {
 
 
     @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "프로필 업로드", description = "프로필 업로드")
     public ResponseEntity<Boolean> uploadFile(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestPart("multipartFile") MultipartFile multipartFile,
-            @RequestPart("introduce") String introduce,
-            @RequestPart("hashTag") List<String> hashTag) {
-        return ResponseEntity.ok((memberFacade.uploadProfile(customUser, multipartFile, introduce, hashTag)));
+            @RequestPart("profile") @Valid UpsertProfileRequest upsertProfileRequest) {
+        return ResponseEntity.ok((memberFacade.uploadProfile(customUser, multipartFile, upsertProfileRequest)));
     }
     
     @PatchMapping("/v1/profile")
