@@ -3,6 +3,7 @@ package org.example.plzdrawing.api.member.facade;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
+import org.example.plzdrawing.api.member.dto.request.UpsertProfileRequest;
 import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
 import org.example.plzdrawing.api.member.service.MemberService;
 import org.example.plzdrawing.api.member.service.ProfileTagService;
@@ -21,12 +22,12 @@ public class MemberFacade {
     private final S3Service s3Service;
     private final ProfileTagService profileTagService;
     private final ContentService contentService;
-    public Boolean uploadProfile(CustomUser customUser, MultipartFile multipartFile, String introduce, List<String> hashTag) {
+    public Boolean uploadProfile(CustomUser customUser, MultipartFile multipartFile, UpsertProfileRequest upsertProfileRequest) {
         //프로필 업로드
         Member member = customUser.getMember();
         String fileName = s3Service.uploadFile(member.getId(), multipartFile);
-        memberService.makeProfile(member, fileName, introduce);
-        profileTagService.syncMemberTags(member.getId(), hashTag);
+        memberService.makeProfile(member, fileName, upsertProfileRequest.introduce());
+        profileTagService.syncMemberTags(member.getId(), upsertProfileRequest.hashTag());
         return true;
     }
 
