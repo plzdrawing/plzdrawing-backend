@@ -49,10 +49,11 @@ public class MemberController {
     @Operation(summary = "프로필 수정", description = "닉네임, 한 줄 소개, 해시태그, 프로필 이미지 수정")
     public ResponseEntity<ProfileResponse> updateProfile(
             @AuthenticationPrincipal CustomUser customUser,
-            @RequestBody UpdateProfileRequest request
+            @RequestPart("multipartFile") MultipartFile multipartFile,
+            @RequestPart("profile") UpdateProfileRequest request
     ) {
         Long memberId = customUser.getMember().getId();
-        ProfileResponse response = memberService.updateProfile(memberId, request);
+        ProfileResponse response = memberFacade.updateProfile(memberId, multipartFile, request);
         return ResponseEntity.ok(response);
     }
 
