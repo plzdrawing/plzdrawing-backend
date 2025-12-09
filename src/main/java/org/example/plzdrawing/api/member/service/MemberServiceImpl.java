@@ -5,9 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-import org.example.plzdrawing.api.member.dto.request.UpdateProfileRequest;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
-import org.example.plzdrawing.api.member.dto.response.ProfileResponse;
 import org.example.plzdrawing.common.cookie.CookieService;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.domain.MemberTag;
@@ -48,35 +46,19 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND.getErrorCode()));
     }
 
-
-    public Profile makeProfile(Member member, String fileName, String introduce) {
+    @Override
+    public Profile upsertProfile(Member member, String fileName, String introduce) {
         Profile profile = profileRepository.findByMemberId(member.getId())
                 .orElseGet(() -> Profile.builder()
                         .member(member)
                         .build());
-
+        if(profile.getProfileUrl() != null) {
+            s3Service.deleteFile(profile.getProfileUrl());
+        }
         profile.updateProfileUrl(fileName);
         profile.updateIntroduce(introduce);
 
         return profileRepository.save(profile);
-    }
-
-    public ProfileResponse updateProfile(Long memberId, UpdateProfileRequest request) {
-        Member member = findById(memberId);
-
-        member.updateProfile(
-                request.getNickname(),
-                request.getIntroduction(),
-                request.getHashtags(),
-                request.getProfileImageUrl()
-        );
-
-        return new ProfileResponse(
-                member.getNickname(),
-                member.getIntroduction(),
-                member.getHashtags(),
-                member.getProfileImageUrl()
-        );
     }
 
     @Override

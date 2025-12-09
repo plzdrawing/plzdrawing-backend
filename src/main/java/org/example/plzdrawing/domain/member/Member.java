@@ -41,18 +41,6 @@ public class Member extends BaseTimeEntity {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(length = 100)
-    @Schema(description = "한 줄 소개", example = "그림 그리는 걸 좋아하는 개발자입니다.")
-    private String introduction;
-
-    @Column(length = 255)
-    @Schema(description = "해시태그", example = "#귀여운 #낙서 #동물그림")
-    private String hashtags;
-
-    @Column(length = 500)
-    @Schema(description = "프로필 이미지 URL", example = "https://bucket.s3.ap-northeast-2.amazonaws.com/profile123.png")
-    private String profileImageUrl;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
@@ -77,15 +65,11 @@ public class Member extends BaseTimeEntity {
     private Boolean marketingConsent = false;
 
     @Builder
-    private Member(String email, String password, Provider provider, String nickname, Role role,
-                   String introduction, String hashtags, String profileImageUrl) {
+    private Member(String email, String password, Provider provider, String nickname, Role role) {
         this.email = email;
         this.password = password;
         this.provider = provider;
         this.nickname = nickname;
-        this.introduction = introduction;
-        this.hashtags = hashtags;
-        this.profileImageUrl = profileImageUrl;
         this.status = Status.ACTIVE;
         this.memberTags = new HashSet<>();
         this.role = role;
@@ -127,18 +111,7 @@ public class Member extends BaseTimeEntity {
         this.marketingConsent = signUpRequest.getMarketingConsent();
     }
 
-    public void updateProfile(String nickname, String introduction, String hashtags, String profileImageUrl) {
-        if (nickname != null && !nickname.isBlank()) {
-            this.nickname = nickname;
-        }
-        if (introduction != null) {
-            this.introduction = introduction;
-        }
-        if (hashtags != null) {
-            this.hashtags = hashtags;
-        }
-        if (profileImageUrl != null) {
-            this.profileImageUrl = profileImageUrl;
-        }
+    public void updateNickName(String nickname) {
+        this.nickname = nickname;
     }
 }
