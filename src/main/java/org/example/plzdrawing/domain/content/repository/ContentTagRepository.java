@@ -27,4 +27,19 @@ AND ct.tag.id IN :tagIds
             @Param("tagIds") Collection<Long> tagIds);
 
     void deleteAllByContent(Content content);
+
+    interface ContentTagProjection {
+        Long getContentId();
+        String getTagContent();
+    }
+
+    @Query("""
+        select ct.content.id as contentId, t.content as tagContent
+        from ContentTag ct
+        join ct.tag t
+        where ct.content.id in :contentIds
+          and ct.status = org.example.plzdrawing.domain.Status.ACTIVE
+          and t.status = org.example.plzdrawing.domain.Status.ACTIVE
+""")
+    List<ContentTagProjection> findTagsByContentIds(@Param("contentIds") List<Long> contentIds);
 }

@@ -2,8 +2,6 @@ package org.example.plzdrawing.domain.content.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
-import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.Content;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
@@ -43,13 +41,9 @@ public class ContentService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ContentThumbnailResponse> getMemberContentThumbnails(
-            Long memberId,
-            Pageable pageable
-    ) {
-        Page<ContentThumbnailResponse> page =
-                contentRepository.findThumbnailsByMemberId(memberId, pageable);
-
-        return PageResponse.from(page);
+    public Page<Content> findContents(Long memberId, Pageable pageable) {
+        return (memberId == null)
+                ? contentRepository.findAll(pageable)
+                : contentRepository.findByMemberId(memberId, pageable);
     }
 }
