@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.example.plzdrawing.domain.content.enums.TimeTaken;
 
-public record ContentThumbnailResponse(
+public record GetContentsResponse(
         Long contentId,
         LocalDate createAt,
         List<String> contentUrl,

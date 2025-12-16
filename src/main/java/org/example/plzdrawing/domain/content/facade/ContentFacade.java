@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
-import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
+import org.example.plzdrawing.api.member.dto.response.GetContentsResponse;
 import org.example.plzdrawing.common.exception.RestApiException;
 import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.Content;
@@ -57,7 +57,7 @@ public class ContentFacade {
         return true;
     }
 
-    public PageResponse<ContentThumbnailResponse> getContentsThumbnail(Long memberId, int page, int size) {
+    public PageResponse<GetContentsResponse> getMemberContents(Long memberId, int page, int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
@@ -75,10 +75,10 @@ public class ContentFacade {
         Map<Long, List<String>> tagMap = contentTagService.findTagsByContentIds(contentIds);
         Map<Long, Long> likeMap = likeEntityService.countLikesByContentIds(contentIds);
 
-        List<ContentThumbnailResponse> dtoList = contents.stream()
+        List<GetContentsResponse> dtoList = contents.stream()
                 .map(content -> {
                     Long contentId = content.getId();
-                    return new ContentThumbnailResponse(
+                    return new GetContentsResponse(
                             contentId,
                             content.getCreatedAt().toLocalDate(),
                             imageMap.getOrDefault(contentId, List.of()),
@@ -91,7 +91,7 @@ public class ContentFacade {
                 })
                 .toList();
 
-        Page<ContentThumbnailResponse> dtoPage =
+        Page<GetContentsResponse> dtoPage =
                 new PageImpl<>(dtoList, pageRequest, contentPage.getTotalElements());
 
         return PageResponse.from(dtoPage);

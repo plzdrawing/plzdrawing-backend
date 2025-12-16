@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
-import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
+import org.example.plzdrawing.api.member.dto.response.GetContentsResponse;
 import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
@@ -54,13 +54,13 @@ public class ContentController {
     }
 
     @GetMapping("/v1/content/{memberId}")
-    @Operation(summary = "콘텐츠 조회(섬네일)", description = "콘텐츠 썸네일을 조회합니다.")
-    public ResponseEntity<PageResponse<ContentThumbnailResponse>> getContentsThumbnail(
+    @Operation(summary = "멤버별 콘텐츠 조회", description = "멤버별 콘텐츠를 페이징으로 조회합니다.")
+    public ResponseEntity<PageResponse<GetContentsResponse>> getContentsThumbnail(
             @PathVariable Long memberId,
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         int safePage = (page < 1) ? 0 : page - 1;
-        return ResponseEntity.ok(contentFacade.getContentsThumbnail(memberId, safePage, size));
+        return ResponseEntity.ok(contentFacade.getMemberContents(memberId, safePage, size));
     }
 }
