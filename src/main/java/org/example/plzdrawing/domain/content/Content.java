@@ -55,15 +55,8 @@ public class Content extends BaseTimeEntity {
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ContentTag> contentTags = new LinkedHashSet<>(); // 즉시 초기화
 
-    public void addContentTag(ContentTag ct) {
-        if (ct == null) return;
-        if (contentTags == null) contentTags = new LinkedHashSet<>();
-        contentTags.add(ct);
-        ct.setContent(this);
-    }
-
     public void update(UpdateContentRequest updateContentRequest) {
-        this.title =
+        this.title = updateContentRequest.title();
         this.explanation = updateContentRequest.explain();
         this.price = updateContentRequest.price();
         this.timeTaken = updateContentRequest.timeTaken();

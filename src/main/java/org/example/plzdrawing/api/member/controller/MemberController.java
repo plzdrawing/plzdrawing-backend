@@ -48,7 +48,7 @@ public class MemberController {
     public ResponseEntity<ProfileResponse> updateProfile(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestPart("multipartFile") MultipartFile multipartFile,
-            @RequestPart("profile") UpdateProfileRequest request
+            @RequestPart("profile") @Valid UpdateProfileRequest request
     ) {
         Long memberId = customUser.getMember().getId();
         ProfileResponse response = memberFacade.updateProfile(memberId, multipartFile, request);
