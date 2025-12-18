@@ -153,4 +153,15 @@ public class ContentTagService {
     public void deleteAllByContent(Content content) {
         contentTagRepository.deleteAllByContent(content);
     }
+
+    @Transactional(readOnly = true)
+    public Map<Long, List<String>> findTagsByContentIds(List<Long> contentIds) {
+        if (contentIds.isEmpty()) return Map.of();
+
+        return contentTagRepository.findTagsByContentIds(contentIds).stream()
+                .collect(Collectors.groupingBy(
+                        ContentTagRepository.ContentTagProjection::getContentId,
+                        Collectors.mapping(ContentTagRepository.ContentTagProjection::getTagContent, Collectors.toList())
+                ));
+    }
 }

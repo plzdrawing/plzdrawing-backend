@@ -7,10 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
 import org.example.plzdrawing.api.member.dto.request.UpsertProfileRequest;
-import org.example.plzdrawing.api.member.dto.response.ContentThumbnailResponse;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.api.member.facade.MemberFacade;
-import org.example.plzdrawing.common.page.PageResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -76,16 +74,5 @@ public class MemberController {
     ) {
         memberService.withdraw(customUser.getMember().getId(), request, response);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/v1/content/{memberId}")
-    @Operation(summary = "콘텐츠 조회(섬네일)", description = "콘텐츠 썸네일을 조회합니다.")
-    public ResponseEntity<PageResponse<ContentThumbnailResponse>> getContentsThumbnail(
-            @PathVariable Long memberId,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
-    ) {
-        int safePage = (page < 1) ? 0 : page - 1;
-        return ResponseEntity.ok(memberFacade.getContentsThumbnail(memberId, safePage, size));
     }
 }

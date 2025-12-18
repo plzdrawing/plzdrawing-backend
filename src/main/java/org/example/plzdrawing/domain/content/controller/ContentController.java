@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
+import org.example.plzdrawing.api.member.dto.response.GetContentsResponse;
+import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
 import org.example.plzdrawing.domain.content.dto.response.UploadContentResponse;
@@ -13,9 +15,12 @@ import org.example.plzdrawing.domain.content.facade.ContentFacade;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,5 +51,16 @@ public class ContentController {
             @RequestPart("content") @Valid UpdateContentRequest updateContentRequest
     ) {
         return ResponseEntity.ok(contentFacade.updateContents(customUser, multipartFile, updateContentRequest));
+    }
+
+    @GetMapping("/v1/content/{memberId}")
+    @Operation(summary = "멤버별 콘텐츠 조회", description = "멤버별 콘텐츠를 페이징으로 조회합니다.")
+    public ResponseEntity<PageResponse<GetContentsResponse>> getContentsThumbnail(
+            @PathVariable Long memberId,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        int safePage = (page < 1) ? 0 : page - 1;
+        return ResponseEntity.ok(contentFacade.getMemberContents(memberId, safePage, size));
     }
 }
