@@ -30,6 +30,10 @@ public class Review extends BaseTimeEntity{
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
+
     // TODO : 이미지 논의
     //    @OneToMany(mappedBy = "review")
     //    private List<ReviewImage> images = new ArrayList<>();
