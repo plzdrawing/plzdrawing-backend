@@ -66,7 +66,7 @@ public class ContentController {
     }
 
     @GetMapping
-    @Operation(summary = "날짜별 콘텐츠 조회", description = "최신순으로 콘텐츠를 조회한다.")
+    @Operation(summary = "최신순 콘텐츠 조회", description = "최신순으로 콘텐츠를 조회한다.")
     public ResponseEntity<PageResponse<LatestContentsResponse>> getLatestContents(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
