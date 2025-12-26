@@ -86,7 +86,7 @@ public class ContentFacade {
                     Long contentId = content.getId();
                     return new ContentsDto(
                             contentId,
-                            content.getCreatedAt().toLocalDate(),
+                            content.getCreatedAt(),
                             imageMap.getOrDefault(contentId, List.of()),
                             tagMap.getOrDefault(contentId, List.of()),
                             content.getExplanation(),
@@ -140,7 +140,7 @@ public class ContentFacade {
 
                     ContentsDto contentsDto = new ContentsDto(
                             contentId,
-                            content.getCreatedAt().toLocalDate(),
+                            content.getCreatedAt(),
                             imageMap.getOrDefault(contentId, List.of()),
                             tagMap.getOrDefault(contentId, List.of()),
                             content.getExplanation(),

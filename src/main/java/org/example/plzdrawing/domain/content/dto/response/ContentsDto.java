@@ -1,7 +1,7 @@
 package org.example.plzdrawing.domain.content.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.example.plzdrawing.domain.content.enums.TimeTaken;
 
@@ -9,7 +9,7 @@ public record ContentsDto(
         @Schema(description = "콘텐츠 id", example = "1")
         Long contentId,
         @Schema(description = "콘텐츠 생성일자", example = "2025-12-22")
-        LocalDate createAt,
+        LocalDateTime createAt,
         @Schema(description = "콘텐츠 url", example = "[https://s3~, https://s3~]")
         List<String> contentUrl,
         @Schema(description = "콘텐츠 해시태그", example = "[사과, 바나나]")
