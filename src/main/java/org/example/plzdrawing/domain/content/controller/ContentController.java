@@ -6,10 +6,11 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.auth.customuser.CustomUser;
-import org.example.plzdrawing.api.member.dto.response.GetContentsResponse;
+import org.example.plzdrawing.domain.content.dto.response.ContentsDto;
 import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
+import org.example.plzdrawing.domain.content.dto.response.LatestContentsResponse;
 import org.example.plzdrawing.domain.content.dto.response.UploadContentResponse;
 import org.example.plzdrawing.domain.content.facade.ContentFacade;
 import org.springframework.http.MediaType;
@@ -53,14 +54,24 @@ public class ContentController {
         return ResponseEntity.ok(contentFacade.updateContents(customUser, multipartFile, updateContentRequest));
     }
 
-    @GetMapping("/v1/content/{memberId}")
+    @GetMapping("/{memberId}")
     @Operation(summary = "멤버별 콘텐츠 조회", description = "멤버별 콘텐츠를 페이징으로 조회합니다.")
-    public ResponseEntity<PageResponse<GetContentsResponse>> getContentsThumbnail(
+    public ResponseEntity<PageResponse<ContentsDto>> getContentsThumbnail(
             @PathVariable Long memberId,
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         int safePage = (page < 1) ? 0 : page - 1;
         return ResponseEntity.ok(contentFacade.getMemberContents(memberId, safePage, size));
+    }
+
+    @GetMapping
+    @Operation(summary = "최신순 콘텐츠 조회", description = "최신순으로 콘텐츠를 조회한다.")
+    public ResponseEntity<PageResponse<LatestContentsResponse>> getLatestContents(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        int safePage = (page < 1) ? 0 : page - 1;
+        return ResponseEntity.ok(contentFacade.getLatestContents(safePage, size));
     }
 }

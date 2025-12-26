@@ -2,8 +2,9 @@ package org.example.plzdrawing.api.member.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.api.member.dto.response.ProfileInfoResponse;
 import org.example.plzdrawing.common.cookie.CookieService;
@@ -21,6 +22,7 @@ import org.example.plzdrawing.util.s3.S3Service;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.example.plzdrawing.api.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
 
@@ -111,5 +113,17 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.delete(member);
 
         profileRepository.findByMemberId(memberId).ifPresent(profileRepository::delete);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Long, String> findProfileImageUrlByMemberIds(List<Long> memberIds) {
+        if (memberIds.isEmpty()) return Map.of();
+
+        return profileRepository.findProfilesByMemberIds(memberIds).stream()
+                .collect(Collectors.toMap(
+                        ProfileRepository.ProfileProjection::getMemberId,
+                        p -> p.getProfileUrl() == null ? null : s3Service.getFileUrl(p.getProfileUrl())
+                ));
     }
 }

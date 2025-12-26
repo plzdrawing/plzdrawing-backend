@@ -1,6 +1,9 @@
 package org.example.plzdrawing.domain.content.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.plzdrawing.domain.content.Content;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
@@ -45,5 +48,21 @@ public class ContentService {
         return (memberId == null)
                 ? contentRepository.findAll(pageable)
                 : contentRepository.findByMemberId(memberId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Content> findLatest(Pageable pageable) {
+        return contentRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, Long> countDrawingsByMemberIds(List<Long> memberIds) {
+        if (memberIds.isEmpty()) return Map.of();
+
+        return contentRepository.countByMemberIds(memberIds).stream()
+                .collect(Collectors.toMap(
+                        ContentRepository.DrawingCountProjection::getMemberId,
+                        ContentRepository.DrawingCountProjection::getCnt
+                ));
     }
 }
