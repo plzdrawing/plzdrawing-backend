@@ -10,7 +10,7 @@ import org.example.plzdrawing.domain.content.dto.response.ContentsDto;
 import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
-import org.example.plzdrawing.domain.content.dto.response.LatestContentsResponse;
+import org.example.plzdrawing.domain.content.dto.response.GetContentsResponse;
 import org.example.plzdrawing.domain.content.dto.response.UploadContentResponse;
 import org.example.plzdrawing.domain.content.facade.ContentFacade;
 import org.springframework.http.MediaType;
@@ -66,12 +66,14 @@ public class ContentController {
     }
 
     @GetMapping
-    @Operation(summary = "최신순 콘텐츠 조회", description = "최신순으로 콘텐츠를 조회한다.")
-    public ResponseEntity<PageResponse<LatestContentsResponse>> getLatestContents(
+    @Operation(summary = "옵션별 콘텐츠 조회", description = "옵션별로 콘텐츠를 조회한다. (0이면 최신순 1이면 좋아요 누른 게시글)")
+    public ResponseEntity<PageResponse<GetContentsResponse>> getLatestContents(
+            @AuthenticationPrincipal CustomUser customUser,
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "option", defaultValue = "0") int option
     ) {
         int safePage = (page < 1) ? 0 : page - 1;
-        return ResponseEntity.ok(contentFacade.getLatestContents(safePage, size));
+        return ResponseEntity.ok(contentFacade.getLatestContents(safePage, size, customUser, option));
     }
 }

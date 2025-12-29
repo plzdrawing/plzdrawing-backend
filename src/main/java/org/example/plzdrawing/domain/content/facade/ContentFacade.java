@@ -1,6 +1,7 @@
 package org.example.plzdrawing.domain.content.facade;
 
 import static org.example.plzdrawing.common.error.CommonErrorCode.CONTENT_NOT_FOUND;
+import static org.example.plzdrawing.common.error.CommonErrorCode.INVALID_FIELD;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import org.example.plzdrawing.common.page.PageResponse;
 import org.example.plzdrawing.domain.content.Content;
 import org.example.plzdrawing.domain.content.dto.request.UpdateContentRequest;
 import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
-import org.example.plzdrawing.domain.content.dto.response.LatestContentsResponse;
+import org.example.plzdrawing.domain.content.dto.response.GetContentsResponse;
 import org.example.plzdrawing.domain.content.dto.response.UploadContentResponse;
 import org.example.plzdrawing.domain.content.service.ContentImageService;
 import org.example.plzdrawing.domain.content.service.ContentService;
@@ -86,7 +87,7 @@ public class ContentFacade {
                     Long contentId = content.getId();
                     return new ContentsDto(
                             contentId,
-                            content.getCreatedAt().toLocalDate(),
+                            content.getCreatedAt(),
                             imageMap.getOrDefault(contentId, List.of()),
                             tagMap.getOrDefault(contentId, List.of()),
                             content.getExplanation(),
@@ -103,10 +104,18 @@ public class ContentFacade {
         return PageResponse.from(dtoPage);
     }
 
-    public PageResponse<LatestContentsResponse> getLatestContents(int page, int size) {
+    public PageResponse<GetContentsResponse> getLatestContents(int page, int size, CustomUser customUser, int option) {
         PageRequest pageRequest = PageRequest.of(page, size);
-
-        Page<Content> contentPage = contentService.findLatest(pageRequest);
+        Page<Content> contentPage;
+        if(option == 0) {
+            contentPage = contentService.findLatest(pageRequest);
+        }
+        else if(option == 1) {
+            contentPage = contentService.findByMyLikeLatest(customUser.getMember(), pageRequest);
+        }
+        else {
+            throw new RestApiException(INVALID_FIELD.getErrorCode());
+        }
         if (contentPage.isEmpty()) {
             return PageResponse.from(Page.empty(pageRequest));
         }
@@ -123,7 +132,7 @@ public class ContentFacade {
         Map<Long, Long> drawingCountMap = contentService.countDrawingsByMemberIds(memberIds);
         Map<Long, ReviewService.ReviewStats> reviewStatsMap = reviewService.findSellingMemberStats(memberIds);
 
-        List<LatestContentsResponse> dtoList = contents.stream()
+        List<GetContentsResponse> dtoList = contents.stream()
                 .map(content -> {
                     Long contentId = content.getId();
                     Long uploaderId = content.getMember().getId();
@@ -140,7 +149,7 @@ public class ContentFacade {
 
                     ContentsDto contentsDto = new ContentsDto(
                             contentId,
-                            content.getCreatedAt().toLocalDate(),
+                            content.getCreatedAt(),
                             imageMap.getOrDefault(contentId, List.of()),
                             tagMap.getOrDefault(contentId, List.of()),
                             content.getExplanation(),
@@ -149,7 +158,7 @@ public class ContentFacade {
                             likeMap.getOrDefault(contentId, 0L)
                     );
 
-                    return new LatestContentsResponse(uploaderDto, contentsDto);
+                    return new GetContentsResponse(uploaderDto, contentsDto);
                 })
                 .toList();
 
