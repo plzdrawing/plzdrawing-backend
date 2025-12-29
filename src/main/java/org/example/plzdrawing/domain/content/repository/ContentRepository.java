@@ -29,4 +29,12 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
         group by c.member.id
     """)
     List<DrawingCountProjection> countByMemberIds(@Param("memberIds") List<Long> memberIds);
+
+    @Query("""
+        select distinct c
+        from LikeEntity l join l.content c
+        where l.member = :member
+        order by c.createdAt desc
+    """)
+    Page<Content> findByMemberLikeAndCreatedAtDesc(@Param("member")Member member, Pageable pageable);
 }
