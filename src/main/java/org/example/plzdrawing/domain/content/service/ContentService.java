@@ -11,6 +11,7 @@ import org.example.plzdrawing.domain.content.dto.request.UploadContentRequest;
 import org.example.plzdrawing.domain.content.repository.ContentRepository;
 import org.example.plzdrawing.domain.member.Member;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,5 +65,9 @@ public class ContentService {
                         ContentRepository.DrawingCountProjection::getMemberId,
                         ContentRepository.DrawingCountProjection::getCnt
                 ));
+    }
+
+    public Page<Content> findByMyLikeLatest(Member member, PageRequest pageRequest) {
+        return contentRepository.findByMemberLikeAndCreatedAtDesc(member, pageRequest);
     }
 }
